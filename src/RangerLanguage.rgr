@@ -19,13 +19,12 @@
 ; repository's own AGENTS.md says cost the most time.
 ; ==============================================================================
 
-Import "RangerTokens.rgr"
 Import "lib.rs"
 
 class RangerLanguage {
     Extends(EditorLanguage)
 
-    def lexer:RangerTokenizer (new RangerTokenizer)
+    def lexer:RangerTokenizer (RangerTokenizer.new_())
 
     Constructor () {
     }
