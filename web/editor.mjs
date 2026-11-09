@@ -115,7 +115,7 @@ function engineOrExplain(name, script, command) {
   const help =
     why +
     "\n\nThis page needs its compiled engine, which is built rather than " +
-    "checked in:\n\n    npm run " + command + "\n\nThen serve the dist/ directory it " +
+    "checked in:\n\n    " + command + "\n\nThen serve the dist/ directory it " +
     "writes — not the source directory this file lives in.";
   statusEl.textContent = "no engine — see below";
   const box = document.createElement("pre");
@@ -130,7 +130,7 @@ function engineOrExplain(name, script, command) {
 const web = new (engineOrExplain(
   "CodeEditorWeb",
   "code_editor_web.js",
-  "datagrid:editor:web",
+  "scripts/build-web.sh",
 ))();
 web.start(canvas.width, canvas.height);
 // Published so a test can ask the app what it thinks is true, rather than

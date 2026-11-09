@@ -7,7 +7,7 @@
  * library. What it checks that a unit test cannot: that the scene reaching
  * WebGL has text in it, in more than one colour.
  *
- *   node gallery/datagrid/web/editor/smoke.mjs [--port 8899] [--shot]
+ *   node web/smoke.mjs [--dist dist] [--port 8899] [--shot] [--shot-dir shots]
  */
 import http from "node:http";
 import fs from "node:fs";
@@ -16,7 +16,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const DIST = path.join(HERE, "dist");
+const DIST = path.resolve(argVal("--dist", path.join(HERE, "..", "dist")));
 const PORT = parseInt(argVal("--port", "8899"), 10);
 
 function argVal(flag, dflt) {
@@ -169,7 +169,8 @@ async function main() {
     }
 
     if (process.argv.includes("--shot")) {
-      const shot = path.resolve(HERE, "../../artifacts/code_editor_web.png");
+      const shot = path.resolve(argVal("--shot-dir", path.join(HERE, "..", "shots")), "code_editor_web.png");
+      fs.mkdirSync(path.dirname(shot), { recursive: true });
       await runChrome(chrome, [
         ...GL_ARGS,
         "--virtual-time-budget=15000",

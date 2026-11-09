@@ -1,0 +1,16 @@
+{
+  "name": "rangercodeeditor",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "description": "A code editor written in Ranger's Rust syntax: the page build and its browser tests.",
+  "type": "module",
+  "scripts": {
+    "build": "bash scripts/build-web.sh",
+    "test": "bash scripts/test.sh",
+    "smoke": "node web/smoke.mjs --dist dist",
+    "keyboard": "node web/keyboard.mjs --dist dist"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

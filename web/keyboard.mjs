@@ -15,7 +15,7 @@
  *     also checked here, because a trap that is only documented is still a
  *     trap.
  *
- *   node gallery/datagrid/web/editor/keyboard.mjs [--port 8897] [--headed]
+ *   node web/keyboard.mjs [--dist dist] [--port 8897] [--headed]
  */
 import http from "node:http";
 import fs from "node:fs";
@@ -24,7 +24,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const DIST = path.join(HERE, "dist");
+const DIST = path.resolve(process.argv.includes("--dist") ? process.argv[process.argv.indexOf("--dist") + 1] : path.join(HERE, "..", "dist"));
 const PORT = parseInt(argVal("--port", "8897"), 10);
 
 function argVal(flag, dflt) {
@@ -120,7 +120,7 @@ async function state(page) {
 
 async function main() {
   if (!fs.existsSync(path.join(DIST, "code_editor_web.js"))) {
-    console.error("no build in " + DIST + " — run: npm run datagrid:editor:web");
+    console.error("no build in " + DIST + " — run: scripts/build-web.sh");
     process.exit(1);
   }
   const exe = findChromium();
