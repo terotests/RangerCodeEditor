@@ -10,6 +10,7 @@ pub mod code_tokens;
 pub mod completion;
 pub mod editor_diagnostic;
 pub mod editor_language;
+pub mod js_tokens;
 mod rgr;
 
 /// Text in the target's own units, for crates that use this one.

@@ -11,7 +11,7 @@
 ; a line, and an edit that puts the caret in the wrong place.
 ; ==============================================================================
 
-Import "../src/JsTokens.rgr"
+Import "../src/lib.rs"
 Import "../src/ScriptEditor.rgr"
 Import "../src/JsLanguage.rgr"
 Import "../src/RangerLanguage.rgr"
@@ -65,7 +65,7 @@ class ScriptEditorTest {
         def c:Checker (new Checker)
 
         print "== the lexer =="
-        def lx:JsTokenizer (new JsTokenizer)
+        def lx:JsTokenizer (JsTokenizer.new_())
         def src:string "const rows = sheetRows('Sales'); // read the sheet"
         def line:CodeTokenLine (lx.tokenizeLine(src))
         c.eqInt("const is a keyword" (ScriptEditorTest.kindAt(line 0)) (CodeTokenKind.keyword()))

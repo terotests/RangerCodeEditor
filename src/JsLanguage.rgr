@@ -24,7 +24,6 @@
 ; going quiet.
 ; ==============================================================================
 
-Import "JsTokens.rgr"
 Import "lib.rs"
 Import "../../ts_parser/ts_parser_simple.rgr"
 
@@ -36,7 +35,7 @@ class JsLanguage {
     ; Microseconds the last full parse took, for whoever wants to show it.
     def parseUs:int 0
     def parsedLastRun:boolean false
-    def lexer:JsTokenizer (new JsTokenizer)
+    def lexer:JsTokenizer (JsTokenizer.new_())
 
     Constructor () {
     }
