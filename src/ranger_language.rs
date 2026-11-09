@@ -107,18 +107,18 @@ impl RangerLanguage {
         while li < n {
             let raw: String = lines[li as usize].clone();
             let s: String = raw.trim().to_string();
-            let mut kind: String = "";
+            let mut kind: String = String::new();
             let mut rest: String = String::new();
             if self.beginsWith(&s, "fn ") {
-                kind = "method";
+                kind = "method".to_string();
                 rest = CeNative::substr(&s, 3, (CeNative::str_len(&s)));
             }
             if self.beginsWith(&s, "sfn ") {
-                kind = "static";
+                kind = "static".to_string();
                 rest = CeNative::substr(&s, 4, (CeNative::str_len(&s)));
             }
             if self.beginsWith(&s, "def ") {
-                kind = "field";
+                kind = "field".to_string();
                 rest = CeNative::substr(&s, 4, (CeNative::str_len(&s)));
             }
             if !kind.is_empty() {
@@ -377,7 +377,7 @@ impl EditorLanguage for RangerLanguage {
     fn handlesFile(&self, name: &str) -> bool {
         LanguageText::hasSuffix(name, ".rgr")
     }
-    fn diagnose(&self, source: &str) -> Vec<Rc<RefCell<EditorDiagnostic>>> {
+    fn diagnose(&mut self, source: &str) -> Vec<Rc<RefCell<EditorDiagnostic>>> {
         let mut lines: Vec<String> = LanguageText::linesOf(source);
         self.quickDiagnose(&lines)
     }

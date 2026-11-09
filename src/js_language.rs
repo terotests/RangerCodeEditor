@@ -619,19 +619,19 @@ impl JsLanguage {
         let mut parser: Rc<RefCell<TSParserSimple>> = Rc::new(RefCell::new(TSParserSimple::new()));
         // A diagnostic on stdout is no use to a page with no console open, and
         // it is printed once per keystroke. The host reads the fields instead.
-        TSParserSimple::setQuiet(&parser, true);
-        TSParserSimple::initParser(&parser, tokens.clone());
-        parser.borrow_mut().tsxMode = true;
-        let mut _ast: Rc<RefCell<TSNode>> = TSParserSimple::parseProgram(&parser);
+        TSParserSimple::set_quiet(&parser, true);
+        TSParserSimple::init_parser(&parser, tokens.clone());
+        parser.borrow_mut().tsx_mode = true;
+        let mut _ast: Rc<RefCell<TSNode>> = TSParserSimple::parse_program(&parser);
         let t1: f64 = wall_clock_ms();
         let took: f64 = (t1 - t0) * 1000.0;
         self.parseUs = took.floor() as i64;
         self.parsedLastRun = true;
-        if parser.borrow().errorCount == 0 {
+        if parser.borrow().error_count == 0 {
             return;
         }
-        let mut line: i64 = parser.borrow().firstErrorLine;
-        let mut col: i64 = parser.borrow().firstErrorCol;
+        let mut line: i64 = parser.borrow().first_error_line;
+        let mut col: i64 = parser.borrow().first_error_col;
         // The parser counts from one; the editor counts from zero.
         if line > 0 {
             line -= 1;
@@ -643,7 +643,7 @@ impl JsLanguage {
         } else {
             col = 0;
         }
-        let mut msg: String = TSParserSimple::firstError(&parser);
+        let mut msg: String = TSParserSimple::first_error(&parser);
         if msg.is_empty() {
             msg = "the script does not parse".to_string();
         }

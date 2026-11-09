@@ -12,8 +12,6 @@ use crate::js_language::JsLanguage;
 use crate::ranger_language::RangerLanguage;
 use crate::rgr::CeNative;
 use crate::rgr::EditorBuffer;
-use crate::rgr::UIInput;
-use crate::rgr::UITextRenderer;
 use crate::script_editor::ScriptEditor;
 use crate::rgr::{FontManager, EVGColor, EVGDisplayList, EVGDrawCmd, SoftCanvas, UIContext, UIInput, UITextRenderer};
 
@@ -38,9 +36,9 @@ use crate::rgr::{FontManager, EVGColor, EVGDisplayList, EVGDrawCmd, SoftCanvas, 
 /// ==============================================================================
 pub struct CodeEditorPage {
     pub editor: Rc<RefCell<ScriptEditor>>,
-    canvas: Rc<RefCell<SoftCanvas>>,
-    ctx: Rc<RefCell<UIContext>>,
-    input: Rc<RefCell<UIInput>>,
+    pub(crate) canvas: Rc<RefCell<SoftCanvas>>,
+    pub(crate) ctx: Rc<RefCell<UIContext>>,
+    pub(crate) input: Rc<RefCell<UIInput>>,
     pub W: i64,
     pub H: i64,
     pub headerH: i64,
@@ -61,11 +59,11 @@ pub struct CodeEditorPage {
     /// nothing else in the editor changes. Nothing is spawned, connected to or
     /// serialized — see lang/EditorLanguage.rgr for why that is deliberate.
     pub languages: Rc<RefCell<LanguageRegistry>>,
-    bg: Rc<RefCell<EVGColor>>,
-    barBg: Rc<RefCell<EVGColor>>,
-    barText: Rc<RefCell<EVGColor>>,
-    barMuted: Rc<RefCell<EVGColor>>,
-    accent: Rc<RefCell<EVGColor>>,
+    pub(crate) bg: Rc<RefCell<EVGColor>>,
+    pub(crate) barBg: Rc<RefCell<EVGColor>>,
+    pub(crate) barText: Rc<RefCell<EVGColor>>,
+    pub(crate) barMuted: Rc<RefCell<EVGColor>>,
+    pub(crate) accent: Rc<RefCell<EVGColor>>,
 }
 
 impl CodeEditorPage {
@@ -215,16 +213,16 @@ impl CodeEditorPage {
         SoftCanvas::init(&self.canvas.clone(), w, h);
         let mut _tmp_3890 = self.canvas.clone();
         UIContext::attach(&self.ctx.clone(), _tmp_3890);
-        UITextRenderer::addFontDir(&self.ctx.borrow().tr.clone(), font_dir);
+        UITextRenderer::add_font_dir(&self.ctx.borrow().tr.clone(), font_dir);
         let mut _tmp_3893 = self.fontFamily.clone();
-        let ok: bool = UITextRenderer::loadFont(
+        let ok: bool = UITextRenderer::load_font(
             &self.ctx.borrow().tr,
             _tmp_3893,
             "Open_Sans/OpenSans-Regular.ttf"
         );
         let fm: Rc<RefCell<FontManager>> = self.ctx.borrow().tr.borrow().fm.clone();
-        FontManager::loadFont(&fm, "Open_Sans/OpenSans-Bold.ttf");
-        FontManager::loadFont(&fm, "Noto_Sans/NotoSans-Regular.ttf");
+        FontManager::load_font(&fm, "Open_Sans/OpenSans-Bold.ttf");
+        FontManager::load_font(&fm, "Noto_Sans/NotoSans-Regular.ttf");
         if !ok {
             self.status = "bitmap-font fallback".to_string();
         } else {
@@ -246,7 +244,7 @@ impl CodeEditorPage {
         self.loadSample(0);
     }
     pub fn addFont(&mut self, family: &str, data: &[u8]) -> bool {
-        let ok: bool = UITextRenderer::loadFontBytes(
+        let ok: bool = UITextRenderer::load_font_bytes(
             &self.ctx.borrow().tr,
             family.to_string(),
             data
@@ -257,7 +255,7 @@ impl CodeEditorPage {
         ok
     }
     pub fn addFace(&self, data: &[u8]) -> bool {
-        return UITextRenderer::addFaceBytes(&self.ctx.borrow().tr, data);
+        return UITextRenderer::add_face_bytes(&self.ctx.borrow().tr, data);
     }
     pub fn resize(&mut self, w: i64, h: i64) {
         if w < 240 {
@@ -271,7 +269,7 @@ impl CodeEditorPage {
         SoftCanvas::init(&self.canvas.clone(), w, h);
         let mut _tmp_3904 = self.canvas.clone();
         UIContext::attach(&self.ctx.clone(), _tmp_3904);
-        UITextRenderer::clearCache(&self.ctx.borrow().tr.clone());
+        UITextRenderer::clear_cache(&self.ctx.borrow().tr.clone());
     }
     /// --- languages -------------------------------------------------------------
     pub fn installLanguages(&self) {
@@ -375,40 +373,40 @@ impl CodeEditorPage {
         let mut _tmp_3940 = self.ctx.borrow().tr.clone();
         self.editor.clone().borrow_mut().selectLineAt(&_tmp_3940, px, py);
     }
-    fn update(&mut self, inp: &Rc<RefCell<UIInput>>) {
+    pub(crate) fn update(&mut self, inp: &Rc<RefCell<UIInput>>) {
         let mut _tmp_3943 = self.editorTop();
         let mut _tmp_3944 = self.W.clone();
         let mut _tmp_3945 = self.editorHeight();
         self.editor.clone().borrow().setBounds(0, _tmp_3943, _tmp_3944, _tmp_3945);
-        if inp.borrow().pointerPressed {
-            let mut _tmp_3948 = inp.borrow().pointerX.clone();
-            if self.editor.borrow().insideRect(_tmp_3948, inp.borrow().pointerY.clone()) {
+        if inp.borrow().pointer_pressed {
+            let mut _tmp_3948 = inp.borrow().pointer_x.clone();
+            if self.editor.borrow().insideRect(_tmp_3948, inp.borrow().pointer_y.clone()) {
                 let mut _tmp_3951 = self.ctx.borrow().tr.clone();
-                let mut _tmp_3952 = inp.borrow().pointerX.clone();
-                let mut _tmp_3953 = inp.borrow().pointerY.clone();
-                let mut _tmp_3954 = inp.borrow().shiftDown.clone();
-                self.editor.clone().borrow_mut().pointerDown(&_tmp_3951, _tmp_3952, _tmp_3953, _tmp_3954);
+                let mut _tmp_3952 = inp.borrow().pointer_x.clone();
+                let mut _tmp_3953 = inp.borrow().pointer_y.clone();
+                let mut _tmp_3954 = inp.borrow().shift_down.clone();
+                self.editor.clone().borrow_mut().pointerDown(_tmp_3951.clone(), _tmp_3952, _tmp_3953, _tmp_3954);
             }
         } else {
-            if inp.borrow().pointerDown {
+            if inp.borrow().pointer_down {
                 if self.editor.borrow().focused {
                     let mut _tmp_3957 = self.ctx.borrow().tr.clone();
-                    let mut _tmp_3958 = inp.borrow().pointerX.clone();
-                    let mut _tmp_3959 = inp.borrow().pointerY.clone();
-                    self.editor.clone().borrow_mut().pointerDrag(&_tmp_3957, _tmp_3958, _tmp_3959);
+                    let mut _tmp_3958 = inp.borrow().pointer_x.clone();
+                    let mut _tmp_3959 = inp.borrow().pointer_y.clone();
+                    self.editor.clone().borrow_mut().pointerDrag(_tmp_3957.clone(), _tmp_3958, _tmp_3959);
                 }
             }
         }
-        if inp.borrow().scrollDelta != 0 {
-            let mut _tmp_3962 = inp.borrow().scrollDelta.clone();
+        if inp.borrow().scroll_delta != 0 {
+            let mut _tmp_3962 = inp.borrow().scroll_delta.clone();
             self.editor.clone().borrow().scrollBy(_tmp_3962);
         }
-        if inp.borrow().scrollDeltaX != 0 {
-            let mut _tmp_3965 = inp.borrow().scrollDeltaX.clone();
+        if inp.borrow().scroll_delta_x != 0 {
+            let mut _tmp_3965 = inp.borrow().scroll_delta_x.clone();
             self.editor.clone().borrow().scrollByX(_tmp_3965);
         }
-        if inp.borrow().ctrlDown {
-            let t: String = inp.borrow().textInput.clone();
+        if inp.borrow().ctrl_down {
+            let t: String = inp.borrow().text_input.clone();
             let mut ti: i64 = 0;
             let tn: i64 = CeNative::str_len(&t);
             while ti < tn {
@@ -438,17 +436,17 @@ impl CodeEditorPage {
                 ti += 1;
             }
         } else {
-            if UIInput::hasText(&inp) {
-                let mut _tmp_3972 = inp.borrow().textInput.clone();
+            if UIInput::has_text(&inp) {
+                let mut _tmp_3972 = inp.borrow().text_input.clone();
                 self.editor.clone().borrow_mut().handleText(&_tmp_3972);
             }
         }
         let mut ki: i64 = 0;
-        let kn: i64 = UIInput::keyCount(&inp);
+        let kn: i64 = UIInput::key_count(&inp);
         while ki < kn {
-            let key: i64 = UIInput::keyAt(&inp, ki);
-            let mut _tmp_3975 = inp.borrow().shiftDown.clone();
-            let mut _tmp_3976 = inp.borrow().ctrlDown.clone();
+            let key: i64 = UIInput::key_at(&inp, ki);
+            let mut _tmp_3975 = inp.borrow().shift_down.clone();
+            let mut _tmp_3976 = inp.borrow().ctrl_down.clone();
             self.editor.clone().borrow_mut().handleKey(key, _tmp_3975, _tmp_3976);
             ki += 1;
         }
@@ -484,8 +482,8 @@ impl CodeEditorPage {
         r.push_str(&format!(":{}", self.editor.borrow().sel.borrow().caret.borrow().col));
         r.push_str(&format!("|{}", self.editor.borrow().sel.borrow().anchor.borrow().line));
         r.push_str(&format!(":{}", self.editor.borrow().sel.borrow().anchor.borrow().col));
-        r.push_str(&format!("|{}", self.editor.borrow().layout.borrow().scrollLine));
-        r.push_str(&format!(":{}", self.editor.borrow().layout.borrow().scrollX));
+        r.push_str(&format!("|{}", self.editor.borrow().layout.borrow().scroll_line));
+        r.push_str(&format!(":{}", self.editor.borrow().layout.borrow().scroll_x));
         r.push_str(&format!("|{}", self.W));
         r.push_str(&format!("x{}", self.H));
         r.push_str(&format!("|{}", self.blinkPhase()));
@@ -509,7 +507,7 @@ impl CodeEditorPage {
         r
     }
     /// --- painting -------------------------------------------------------------
-    fn pushRect(&self, dl: &Rc<RefCell<EVGDisplayList>>, x: f64, y: f64, w: f64, h: f64, col: &Rc<RefCell<EVGColor>>) {
+    pub(crate) fn pushRect(&self, dl: &Rc<RefCell<EVGDisplayList>>, x: f64, y: f64, w: f64, h: f64, col: &Rc<RefCell<EVGColor>>) {
         let mut c: Rc<RefCell<EVGDrawCmd>> = Rc::new(RefCell::new(EVGDrawCmd::new()));
         c.borrow_mut().kind = 0;
         c.borrow_mut().x = x;
@@ -522,7 +520,7 @@ impl CodeEditorPage {
         c.borrow_mut().a = EVGColor::alpha(&col);
         dl.borrow_mut().cmds.push(c.clone());
     }
-    fn pushText(&self, dl: &Rc<RefCell<EVGDisplayList>>, s: String, x: f64, y: f64, size: f64, col: &Rc<RefCell<EVGColor>>) {
+    pub(crate) fn pushText(&self, dl: &Rc<RefCell<EVGDisplayList>>, s: String, x: f64, y: f64, size: f64, col: &Rc<RefCell<EVGColor>>) {
         if s.is_empty() {
             return;
         }
@@ -530,11 +528,11 @@ impl CodeEditorPage {
         c.borrow_mut().kind = 3;
         c.borrow_mut().x = x;
         c.borrow_mut().y = y;
-        c.borrow_mut().w = UITextRenderer::measureWidth(&self.ctx.borrow().tr, &s, size);
-        c.borrow_mut().h = UITextRenderer::lineHeight(&self.ctx.borrow().tr, size);
+        c.borrow_mut().w = UITextRenderer::measure_width(&self.ctx.borrow().tr, &s, size);
+        c.borrow_mut().h = UITextRenderer::line_height(&self.ctx.borrow().tr, size);
         c.borrow_mut().text = s.clone();
-        c.borrow_mut().fontFamily = self.fontFamily.clone();
-        c.borrow_mut().fontSize = size;
+        c.borrow_mut().font_family = self.fontFamily.clone();
+        c.borrow_mut().font_size = size;
         c.borrow_mut().r = EVGColor::red(&col);
         c.borrow_mut().g = EVGColor::green(&col);
         c.borrow_mut().b = EVGColor::blue(&col);
@@ -566,7 +564,7 @@ impl CodeEditorPage {
         }
         n
     }
-    fn buildDisplayList(&mut self) -> Rc<RefCell<EVGDisplayList>> {
+    pub(crate) fn buildDisplayList(&mut self) -> Rc<RefCell<EVGDisplayList>> {
         self.syncTokens();
         let mut dl: Rc<RefCell<EVGDisplayList>> = Rc::new(RefCell::new(EVGDisplayList::new()));
         let mut _tmp_3994 = self.bg.clone();
@@ -582,12 +580,12 @@ impl CodeEditorPage {
         let mut _tmp_3996 = self.docName.clone();
         self.pushText(&dl, _tmp_3996, 12.0, 7.0, 13.0, &self.barText.clone());
         let mut _tmp_3998 = self.docName.clone();
-        let name_w: i64 = (UITextRenderer::measureWidth(
+        let name_w: i64 = (UITextRenderer::measure_width(
             &self.ctx.borrow().tr,
             &_tmp_3998,
             13.0
         )).floor() as i64;
-        let hint: String = "Ctrl+K next sample · Ctrl+L reload · Ctrl+Z undo · Ctrl+A select all";
+        let hint: String = "Ctrl+K next sample · Ctrl+L reload · Ctrl+Z undo · Ctrl+A select all".to_string();
         let mut _tmp_3999 = self.barMuted.clone();
         self.pushText(&dl,
             hint.to_string(),
@@ -602,7 +600,7 @@ impl CodeEditorPage {
         self.editor.clone().borrow().setBounds(0, _tmp_4001, _tmp_4002, _tmp_4003);
         let mut _tmp_4006 = self.ctx.borrow().tr.clone();
         let mut _tmp_4007 = self.blinkPhase();
-        self.editor.clone().borrow_mut().paint(&dl, &_tmp_4006, _tmp_4007);
+        self.editor.clone().borrow_mut().paint(&dl, _tmp_4006.clone(), _tmp_4007);
         // status
         let sy: i64 = self.H - self.statusH;
         let mut _tmp_4009 = self.barBg.clone();
@@ -619,7 +617,7 @@ impl CodeEditorPage {
             12.0,
             &_tmp_4010
         );
-        let line_count: i64 = EditorBuffer::lineCount(&self.editor.borrow().buf);
+        let line_count: i64 = EditorBuffer::line_count(&self.editor.borrow().buf);
         let toks: i64 = self.tokenCount();
         let problems: i64 = self.editor.borrow_mut().problemCount();
         let mut info: String = format!("{} lines · {} tokens · lex {} us · {} draw cmds", line_count.to_string(), toks, self.lexUs, self.lastCmds);
@@ -653,7 +651,7 @@ impl CodeEditorPage {
                 let _tmp_4016 = (self.editor.borrow().theme).borrow().forSeverity(here.borrow().severity.clone());
                 right_col = _tmp_4016;
             }
-            let rw: i64 = (UITextRenderer::measureWidth(
+            let rw: i64 = (UITextRenderer::measure_width(
                 &self.ctx.borrow().tr,
                 &right,
                 12.0
@@ -673,7 +671,7 @@ impl CodeEditorPage {
     }
     pub fn sceneJson(&mut self) -> String {
         let mut dl: Rc<RefCell<EVGDisplayList>> = self.buildDisplayList();
-        let body: String = EVGDisplayList::toJson(&dl);
+        let body: String = EVGDisplayList::to_json(&dl);
         format!("{}{},\"height\":{},\"list\":{}{}", "{\"width\":".to_string(), EVGDisplayList::num(self.W as f64), EVGDisplayList::num(self.H as f64), body, "}".to_string())
     }
 }

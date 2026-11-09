@@ -1,0 +1,20 @@
+# RangerCodeEditor as a crate. Ranger reads the same files (Import
+# "src/lib.rs"); cargo builds them for Rust programs that use the editor.
+# The paths are those of a Ranger checkout with this repository at
+# gallery/codeeditor (scripts/stage.sh puts it there).
+[package]
+name = "rangercodeeditor"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+build = "build.rs"
+publish = false
+links = "rangercodeeditor"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+ranger = { path = "../../runtime/rust/ranger" }
+
+[workspace]

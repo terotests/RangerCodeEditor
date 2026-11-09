@@ -42,54 +42,54 @@ use crate::rgr::{EVGColor, EVGDisplayList, EVGDrawCmd, EditorBuffer, EditorLayou
 /// away from the letter it is supposed to be in front of.
 /// ==============================================================================
 pub struct ScriptEditorTheme {
-    bg: Rc<RefCell<EVGColor>>,
-    gutterBg: Rc<RefCell<EVGColor>>,
-    gutterText: Rc<RefCell<EVGColor>>,
-    gutterActive: Rc<RefCell<EVGColor>>,
-    currentLine: Rc<RefCell<EVGColor>>,
-    selection: Rc<RefCell<EVGColor>>,
-    caret: Rc<RefCell<EVGColor>>,
-    border: Rc<RefCell<EVGColor>>,
+    pub(crate) bg: Rc<RefCell<EVGColor>>,
+    pub(crate) gutterBg: Rc<RefCell<EVGColor>>,
+    pub(crate) gutterText: Rc<RefCell<EVGColor>>,
+    pub(crate) gutterActive: Rc<RefCell<EVGColor>>,
+    pub(crate) currentLine: Rc<RefCell<EVGColor>>,
+    pub(crate) selection: Rc<RefCell<EVGColor>>,
+    pub(crate) caret: Rc<RefCell<EVGColor>>,
+    pub(crate) border: Rc<RefCell<EVGColor>>,
     /// Token colours.
-    plain: Rc<RefCell<EVGColor>>,
-    keyword: Rc<RefCell<EVGColor>>,
-    builtin: Rc<RefCell<EVGColor>>,
-    number: Rc<RefCell<EVGColor>>,
-    text: Rc<RefCell<EVGColor>>,
-    comment: Rc<RefCell<EVGColor>>,
-    punct: Rc<RefCell<EVGColor>>,
-    tag: Rc<RefCell<EVGColor>>,
-    attr: Rc<RefCell<EVGColor>>,
+    pub(crate) plain: Rc<RefCell<EVGColor>>,
+    pub(crate) keyword: Rc<RefCell<EVGColor>>,
+    pub(crate) builtin: Rc<RefCell<EVGColor>>,
+    pub(crate) number: Rc<RefCell<EVGColor>>,
+    pub(crate) text: Rc<RefCell<EVGColor>>,
+    pub(crate) comment: Rc<RefCell<EVGColor>>,
+    pub(crate) punct: Rc<RefCell<EVGColor>>,
+    pub(crate) tag: Rc<RefCell<EVGColor>>,
+    pub(crate) attr: Rc<RefCell<EVGColor>>,
     /// The completion popup.
-    popupBg: Rc<RefCell<EVGColor>>,
-    popupEdge: Rc<RefCell<EVGColor>>,
-    popupPick: Rc<RefCell<EVGColor>>,
-    popupDetail: Rc<RefCell<EVGColor>>,
+    pub(crate) popupBg: Rc<RefCell<EVGColor>>,
+    pub(crate) popupEdge: Rc<RefCell<EVGColor>>,
+    pub(crate) popupPick: Rc<RefCell<EVGColor>>,
+    pub(crate) popupDetail: Rc<RefCell<EVGColor>>,
     /// The find bar.
-    findBg: Rc<RefCell<EVGColor>>,
-    findEdge: Rc<RefCell<EVGColor>>,
-    findInk: Rc<RefCell<EVGColor>>,
-    findDim: Rc<RefCell<EVGColor>>,
+    pub(crate) findBg: Rc<RefCell<EVGColor>>,
+    pub(crate) findEdge: Rc<RefCell<EVGColor>>,
+    pub(crate) findInk: Rc<RefCell<EVGColor>>,
+    pub(crate) findDim: Rc<RefCell<EVGColor>>,
     /// Diagnostics.
-    errorInk: Rc<RefCell<EVGColor>>,
-    warningInk: Rc<RefCell<EVGColor>>,
+    pub(crate) errorInk: Rc<RefCell<EVGColor>>,
+    pub(crate) warningInk: Rc<RefCell<EVGColor>>,
     /// Diff marks: a band across an added or a removed line and a strip in
     /// the gutter, so a change below the fold still shows in the margin.
-    addedLine: Rc<RefCell<EVGColor>>,
-    removedLine: Rc<RefCell<EVGColor>>,
-    addedMark: Rc<RefCell<EVGColor>>,
-    removedMark: Rc<RefCell<EVGColor>>,
+    pub(crate) addedLine: Rc<RefCell<EVGColor>>,
+    pub(crate) removedLine: Rc<RefCell<EVGColor>>,
+    pub(crate) addedMark: Rc<RefCell<EVGColor>>,
+    pub(crate) removedMark: Rc<RefCell<EVGColor>>,
     /// The minimap on the right: a darker strip, a slider over the visible
     /// range, and a hairline where the text ends.
-    minimapBg: Rc<RefCell<EVGColor>>,
-    minimapSlider: Rc<RefCell<EVGColor>>,
-    minimapEdge: Rc<RefCell<EVGColor>>,
+    pub(crate) minimapBg: Rc<RefCell<EVGColor>>,
+    pub(crate) minimapSlider: Rc<RefCell<EVGColor>>,
+    pub(crate) minimapEdge: Rc<RefCell<EVGColor>>,
     /// Horizontal scrollbar, the same idea as the minimap's vertical slider:
     /// a track along the foot of the text and a thumb for how far along the
     /// longest line you have scrolled.
-    hBarTrack: Rc<RefCell<EVGColor>>,
-    hBarThumb: Rc<RefCell<EVGColor>>,
-    hBarEdge: Rc<RefCell<EVGColor>>,
+    pub(crate) hBarTrack: Rc<RefCell<EVGColor>>,
+    pub(crate) hBarThumb: Rc<RefCell<EVGColor>>,
+    pub(crate) hBarEdge: Rc<RefCell<EVGColor>>,
 }
 
 impl ScriptEditorTheme {
@@ -134,13 +134,13 @@ impl ScriptEditorTheme {
             hBarEdge: EVGColor::rgb(41, 46, 66),
         }
     }
-    fn forSeverity(&self, severity: i64) -> Rc<RefCell<EVGColor>> {
+    pub(crate) fn forSeverity(&self, severity: i64) -> Rc<RefCell<EVGColor>> {
         if severity == DiagnosticSeverity::error() {
             return self.errorInk.clone();
         }
         self.warningInk.clone()
     }
-    fn forKind(&self, kind: i64) -> Rc<RefCell<EVGColor>> {
+    pub(crate) fn forKind(&self, kind: i64) -> Rc<RefCell<EVGColor>> {
         if kind == CodeTokenKind::keyword() {
             return self.keyword.clone();
         }
@@ -170,9 +170,9 @@ impl ScriptEditorTheme {
 }
 
 pub struct ScriptEditor {
-    buf: Rc<RefCell<EditorBuffer>>,
-    sel: Rc<RefCell<EditorSelection>>,
-    layout: Rc<RefCell<EditorLayout>>,
+    pub(crate) buf: Rc<RefCell<EditorBuffer>>,
+    pub(crate) sel: Rc<RefCell<EditorSelection>>,
+    pub(crate) layout: Rc<RefCell<EditorLayout>>,
     pub theme: Rc<RefCell<ScriptEditorTheme>>,
     pub lines: Vec<Rc<RefCell<CodeTokenLine>>>,
     /// The buffer version the tokens were made from. Re-lexing 200 lines is
@@ -244,7 +244,7 @@ pub struct ScriptEditor {
     pub contentWVersion: i64,
     /// Last renderer that painted or hit-tested, so a key that must keep the
     /// caret on screen can measure without the host threading one through.
-    measureTr: Option<Rc<RefCell<UITextRenderer>>>,
+    pub(crate) measureTr: Option<Rc<RefCell<UITextRenderer>>>,
 }
 
 impl ScriptEditor {
@@ -544,24 +544,24 @@ impl ScriptEditor {
         let mut none: Vec<i64> = Vec::new();
         self.lineMarks = none.clone();
         let arg_0 = ScriptEditor::expandTabs(&ScriptEditor::withoutCarriageReturns(source)).clone();
-        EditorBuffer::setText(&self.buf.clone(), &arg_0);
-        EditorSelection::setCaret(&self.sel.clone(), 0, 0);
-        EditorSelection::collapseToCaret(&self.sel.clone());
-        self.layout.borrow_mut().scrollLine = 0;
-        self.layout.borrow_mut().scrollX = 0;
+        EditorBuffer::set_text(&self.buf.clone(), &arg_0);
+        EditorSelection::set_caret(&self.sel.clone(), 0, 0);
+        EditorSelection::collapse_to_caret(&self.sel.clone());
+        self.layout.borrow_mut().scroll_line = 0;
+        self.layout.borrow_mut().scroll_x = 0;
         self.contentWPx = 0;
         self.contentWVersion = -1;
-        self.layout.borrow_mut().fontSize = 13.0;
-        self.layout.borrow_mut().showLineNumbers = true;
+        self.layout.borrow_mut().font_size = 13.0;
+        self.layout.borrow_mut().show_line_numbers = true;
         self.tokenVersion = -1;
         self.dirty = false;
     }
     pub fn text(&self) -> String {
-        return EditorBuffer::getText(&self.buf);
+        return EditorBuffer::get_text(&self.buf);
     }
     pub fn setBounds(&self, bx: i64, by: i64, bw: i64, bh: i64) {
-        EditorLayout::setBounds(&self.layout.clone(), bx, by, bw, bh);
-        self.layout.borrow_mut().rightInset = self.minimapWidth();
+        EditorLayout::set_bounds(&self.layout.clone(), bx, by, bw, bh);
+        self.layout.borrow_mut().right_inset = self.minimapWidth();
     }
     pub fn insideRect(&self, px: i64, py: i64) -> bool {
         if px < self.layout.borrow().x {
@@ -613,7 +613,7 @@ impl ScriptEditor {
             }
         }
         let t0: f64 = wall_clock_ms();
-        self.diagnostics = self.language.borrow_mut().diagnose(&EditorBuffer::getText(&self.buf));
+        self.diagnostics = self.language.borrow_mut().diagnose(&EditorBuffer::get_text(&self.buf));
         let t1: f64 = wall_clock_ms();
         let took: f64 = (t1 - t0) * 1000.0;
         self.diagnoseUs = took.floor() as i64;
@@ -674,10 +674,10 @@ impl ScriptEditor {
         let mut target: Rc<RefCell<EditorDiagnostic>> = self.diagnostics[best as usize].clone();
         let mut _tmp_3556 = target.borrow().line.clone();
         self.moveCaret(_tmp_3556, target.borrow().col.clone(), false);
-        self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+        self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
         let mut _tmp_3560 = self.buf.clone();
         let mut _tmp_3561 = self.sel.clone();
-        EditorLayout::ensureCaretVisible(&self.layout.clone(), &_tmp_3560, &_tmp_3561);
+        EditorLayout::ensure_caret_visible(&self.layout.clone(), &_tmp_3560, &_tmp_3561);
         true
     }
     /// --- completion -------------------------------------------------------------
@@ -693,7 +693,7 @@ impl ScriptEditor {
             self.completionOpen = false;
             return false;
         }
-        let text: String = EditorBuffer::lineAt(&self.buf, line);
+        let text: String = EditorBuffer::line_at(&self.buf, line);
         self.completionStart = LanguageText::prefixStart(&text, col);
         self.completionLine = line;
         self.completionIndex = 0;
@@ -757,7 +757,7 @@ impl ScriptEditor {
         let to: i64 = self.sel.borrow().caret.borrow().col;
         self.closeCompletions();
         let mut _tmp_3569 = pick.borrow().insert.clone();
-        let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::replaceRange(
+        let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::replace_range(
             &self.buf,
             line,
             from,
@@ -800,12 +800,12 @@ impl ScriptEditor {
     pub fn openFind(&mut self) -> bool {
         self.findOpen = true;
         self.closeCompletions();
-        if !EditorSelection::isCollapsed(&self.sel) {
+        if !EditorSelection::is_collapsed(&self.sel) {
             let mut a: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
             let mut b: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
             EditorSelection::normalized(&self.sel.clone(), &a, &b);
             if a.borrow().line == b.borrow().line {
-                let _tmp_3579 = CeNative::substr(&EditorBuffer::lineAt(&self.buf, a.borrow().line.clone()), a.borrow().col, b.borrow().col);
+                let _tmp_3579 = CeNative::substr(&EditorBuffer::line_at(&self.buf, a.borrow().line.clone()), a.borrow().col, b.borrow().col);
                 self.findQuery = _tmp_3579;
             }
         }
@@ -822,8 +822,9 @@ impl ScriptEditor {
     /// first, so a search never edits the document.
     pub fn findType(&mut self, text: &str) {
         self.findQuery.push_str(&text);
-        let mut _tmp_3580 = self.sel.borrow().caret.borrow().line.clone();
-        self.findFrom(_tmp_3580, self.sel.borrow().caret.borrow().col.clone(), false, true);
+        let line: i64 = self.sel.borrow().caret.borrow().line;
+        let col: i64 = self.sel.borrow().caret.borrow().col;
+        self.findFrom(line, col, false, true);
         self.refreshFindCount();
     }
     pub fn findBackspace(&mut self) {
@@ -831,8 +832,9 @@ impl ScriptEditor {
         if n > 0 {
             self.findQuery = CeNative::substr(&self.findQuery, 0, n - 1);
         }
-        let mut _tmp_3583 = self.sel.borrow().caret.borrow().line.clone();
-        self.findFrom(_tmp_3583, self.sel.borrow().caret.borrow().col.clone(), false, true);
+        let line: i64 = self.sel.borrow().caret.borrow().line;
+        let col: i64 = self.sel.borrow().caret.borrow().col;
+        self.findFrom(line, col, false, true);
         self.refreshFindCount();
     }
     pub fn findNext(&mut self, back: bool) -> bool {
@@ -858,7 +860,7 @@ impl ScriptEditor {
         if q.is_empty() {
             return false;
         }
-        let n: i64 = EditorBuffer::lineCount(&self.buf);
+        let n: i64 = EditorBuffer::line_count(&self.buf);
         if n == 0 {
             return false;
         }
@@ -882,7 +884,7 @@ impl ScriptEditor {
             } else {
                 li = (start_line + i) % n;
             }
-            let text: String = EditorBuffer::lineAt(&self.buf, li).to_lowercase();
+            let text: String = EditorBuffer::line_at(&self.buf, li).to_lowercase();
             let mut at: i64 = -1;
             if back {
                 let mut limit: i64 = CeNative::str_len(&text);
@@ -898,13 +900,13 @@ impl ScriptEditor {
                 at = ScriptEditor::indexOfIn(&text, &q, from);
             }
             if at >= 0 {
-                EditorSelection::setAnchor(&self.sel.clone(), li, at);
+                EditorSelection::set_anchor(&self.sel.clone(), li, at);
                 let arg_0 = at + (CeNative::str_len(&self.findQuery));
-                EditorSelection::setCaret(&self.sel.clone(), li, arg_0);
-                self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+                EditorSelection::set_caret(&self.sel.clone(), li, arg_0);
+                self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
                 let mut _tmp_3598 = self.buf.clone();
                 let mut _tmp_3599 = self.sel.clone();
-                EditorLayout::ensureCaretVisible(&self.layout.clone(), &_tmp_3598, &_tmp_3599);
+                EditorLayout::ensure_caret_visible(&self.layout.clone(), &_tmp_3598, &_tmp_3599);
                 self.ensureCaretX();
                 return true;
             }
@@ -924,10 +926,10 @@ impl ScriptEditor {
         let mut a: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
         let mut b: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
         EditorSelection::normalized(&self.sel.clone(), &a, &b);
-        let n: i64 = EditorBuffer::lineCount(&self.buf);
+        let n: i64 = EditorBuffer::line_count(&self.buf);
         let mut li: i64 = 0;
         while li < n {
-            let text: String = EditorBuffer::lineAt(&self.buf, li).to_lowercase();
+            let text: String = EditorBuffer::line_at(&self.buf, li).to_lowercase();
             let mut from: i64 = 0;
             let mut at: i64 = ScriptEditor::indexOfIn(&text, &q, from);
             while at >= 0 {
@@ -952,14 +954,14 @@ impl ScriptEditor {
         }
         format!("find: {}   {} of {}", self.findQuery, self.findOrdinal, self.findTotal)
     }
-    fn paintFind(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, blink: i64) {
+    pub(crate) fn paintFind(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, blink: i64) {
         if !self.findOpen {
             return;
         }
-        let bar_h: f64 = (self.layout.borrow().lineHeight as f64) + 10.0;
+        let bar_h: f64 = (self.layout.borrow().line_height as f64) + 10.0;
         let right: f64 = ((self.layout.borrow().x + self.layout.borrow().w) as f64) - ((self.minimapWidth()) as f64);
         let mut w: f64 = 320.0;
-        let max_w: f64 = (right - ((self.layout.borrow().x + self.layout.borrow().gutterW) as f64)) - 8.0;
+        let max_w: f64 = (right - ((self.layout.borrow().x + self.layout.borrow().gutter_w) as f64)) - 8.0;
         if w > max_w {
             w = max_w;
         }
@@ -990,7 +992,7 @@ impl ScriptEditor {
                 ink = self.theme.borrow().errorInk.clone();
             }
         }
-        let size: f64 = self.layout.borrow().fontSize * 0.9;
+        let size: f64 = self.layout.borrow().font_size * 0.9;
         let label: String = self.findStatus();
         self.pushText(dl, tr, label.clone(), x + 8.0, y + 5.0, size, &ink);
         // A caret after the query, blinking on the editor's own clock. Without
@@ -999,16 +1001,16 @@ impl ScriptEditor {
         let on: i64 = blink - (blink / 2) * 2;
         if on == 0 {
             let head: String = format!("find: {}", self.findQuery);
-            let cx: f64 = (x + 8.0) + UITextRenderer::measureWidth(&tr, &head, size);
+            let cx: f64 = (x + 8.0) + UITextRenderer::measure_width(&tr, &head, size);
             let mut _tmp_3613 = self.theme.borrow().caret.clone();
-            self.pushRect(dl, cx, y + 4.0, 1.5, (self.layout.borrow().lineHeight as f64) - 2.0, &_tmp_3613);
+            self.pushRect(dl, cx, y + 4.0, 1.5, (self.layout.borrow().line_height as f64) - 2.0, &_tmp_3613);
         }
     }
     pub fn minimapWidth(&self) -> i64 {
         if !self.showMinimap {
             return 0;
         }
-        let need: i64 = (self.layout.borrow().gutterW + 200) + self.minimapW;
+        let need: i64 = (self.layout.borrow().gutter_w + 200) + self.minimapW;
         if self.layout.borrow().w < need {
             return 0;
         }
@@ -1042,7 +1044,7 @@ impl ScriptEditor {
     /// strip. Short files stay a compact picture at the top — they are not
     /// stretched to fill the editor.
     pub fn minimapScale(&self) -> f64 {
-        let n: i64 = EditorBuffer::lineCount(&self.buf);
+        let n: i64 = EditorBuffer::line_count(&self.buf);
         if n < 1 {
             return 2.0;
         }
@@ -1061,7 +1063,7 @@ impl ScriptEditor {
     /// strip is measured against. Empty space below a short file is not
     /// part of the picture.
     pub fn minimapPictureH(&self) -> f64 {
-        let n: i64 = EditorBuffer::lineCount(&self.buf);
+        let n: i64 = EditorBuffer::line_count(&self.buf);
         let px: f64 = self.minimapScale();
         let h: f64 = (n as f64) * px;
         let max_h: f64 = self.layout.borrow().h as f64;
@@ -1074,7 +1076,7 @@ impl ScriptEditor {
         h
     }
     pub fn minimapLineAt(&self, py: i64) -> i64 {
-        let n: i64 = EditorBuffer::lineCount(&self.buf);
+        let n: i64 = EditorBuffer::line_count(&self.buf);
         if n <= 1 {
             return 0;
         }
@@ -1101,8 +1103,8 @@ impl ScriptEditor {
     /// fraction of how far it can go — empty space below the specks does
     /// not stretch the mapping.
     pub fn jumpMinimap(&self, py: i64) {
-        let n: i64 = EditorBuffer::lineCount(&self.buf);
-        let vis: i64 = EditorLayout::visibleLineCount(&self.layout);
+        let n: i64 = EditorBuffer::line_count(&self.buf);
+        let vis: i64 = EditorLayout::visible_line_count(&self.layout);
         let mut max_scroll: i64 = n - vis;
         if max_scroll < 0 {
             max_scroll = 0;
@@ -1124,9 +1126,9 @@ impl ScriptEditor {
         }
         let max_d: f64 = max_scroll as f64;
         let scrolled: i64 = (t * max_d + 0.5).floor() as i64;
-        self.layout.borrow_mut().scrollLine = scrolled;
+        self.layout.borrow_mut().scroll_line = scrolled;
         let mut _tmp_3620 = self.buf.clone();
-        EditorLayout::clampScroll(&self.layout.clone(), &_tmp_3620);
+        EditorLayout::clamp_scroll(&self.layout.clone(), &_tmp_3620);
     }
     /// True when the pointer is on the map and the view was moved. Pointer
     /// down and drag both come through here so a test can drive it without a
@@ -1144,16 +1146,16 @@ impl ScriptEditor {
     /// The text area's width, excluding gutter, minimap and the padding the
     /// caret sits in. This is what a long line is compared against.
     pub fn textViewW(&self) -> i64 {
-        let mut vw: i64 = ((self.layout.borrow().w - self.layout.borrow().gutterW) - self.minimapWidth()) - self.layout.borrow()
-            .padX;
-        vw -= self.layout.borrow().padX;
+        let mut vw: i64 = ((self.layout.borrow().w - self.layout.borrow().gutter_w) - self.minimapWidth()) - self.layout.borrow()
+            .pad_x;
+        vw -= self.layout.borrow().pad_x;
         if vw < 1 {
             return 1;
         }
         vw
     }
-    fn linePixelW(&self, tr: &Rc<RefCell<UITextRenderer>>, s: &str) -> i64 {
-        let w: i64 = (UITextRenderer::measureWidth(&tr, s, self.layout.borrow().fontSize.clone())).floor() as i64;
+    pub(crate) fn linePixelW(&self, tr: &Rc<RefCell<UITextRenderer>>, s: &str) -> i64 {
+        let w: i64 = (UITextRenderer::measure_width(&tr, s, self.layout.borrow().font_size.clone())).floor() as i64;
         if w < 1 {
             let n: i64 = CeNative::str_len(&s);
             if n <= 0 {
@@ -1163,7 +1165,7 @@ impl ScriptEditor {
         }
         w
     }
-    fn refreshContentWidth(&mut self, tr: &Rc<RefCell<UITextRenderer>>) {
+    pub(crate) fn refreshContentWidth(&mut self, tr: &Rc<RefCell<UITextRenderer>>) {
         if self.contentWVersion == self.buf.borrow().version {
             if self.contentWPx > 0 {
                 return;
@@ -1171,9 +1173,9 @@ impl ScriptEditor {
         }
         let mut max_w: i64 = 0;
         let mut i: i64 = 0;
-        let n: i64 = EditorBuffer::lineCount(&self.buf);
+        let n: i64 = EditorBuffer::line_count(&self.buf);
         while i < n {
-            let s: String = EditorBuffer::lineAt(&self.buf, i);
+            let s: String = EditorBuffer::line_at(&self.buf, i);
             let lw: i64 = self.linePixelW(tr, &s);
             if lw > max_w {
                 max_w = lw;
@@ -1197,13 +1199,13 @@ impl ScriptEditor {
         0
     }
     pub fn hBarX(&self) -> i64 {
-        self.layout.borrow().x + self.layout.borrow().gutterW
+        self.layout.borrow().x + self.layout.borrow().gutter_w
     }
     pub fn hBarY(&self) -> i64 {
         (self.layout.borrow().y + self.layout.borrow().h) - self.hBarSize
     }
     pub fn hBarW(&self) -> i64 {
-        let bw: i64 = (self.layout.borrow().w - self.layout.borrow().gutterW) - self.minimapWidth();
+        let bw: i64 = (self.layout.borrow().w - self.layout.borrow().gutter_w) - self.minimapWidth();
         if bw < 1 {
             return 1;
         }
@@ -1228,7 +1230,7 @@ impl ScriptEditor {
     pub fn jumpHBar(&self, px: i64) {
         let max_x: i64 = self.maxScrollX();
         if max_x <= 0 {
-            self.layout.borrow_mut().scrollX = 0;
+            self.layout.borrow_mut().scroll_x = 0;
             return;
         }
         let x0: i64 = self.hBarX() + 4;
@@ -1244,7 +1246,7 @@ impl ScriptEditor {
             t = 1.0;
         }
         self.layout.borrow_mut()
-            .scrollX = (t * (max_x as f64) + 0.5)
+            .scroll_x = (t * (max_x as f64) + 0.5)
             .floor() as i64;
         self.clampHScroll();
     }
@@ -1259,17 +1261,17 @@ impl ScriptEditor {
     }
     pub fn clampHScroll(&self) {
         let mut _tmp_3627 = self.maxScrollX();
-        EditorLayout::clampScrollX(&self.layout.clone(), _tmp_3627);
+        EditorLayout::clamp_scroll_x(&self.layout.clone(), _tmp_3627);
     }
     pub fn scrollByX(&self, pixels: i64) {
-        self.layout.borrow_mut().scrollX = self.layout.borrow().scrollX + pixels;
+        self.layout.borrow_mut().scroll_x = self.layout.borrow().scroll_x + pixels;
         self.clampHScroll();
     }
-    fn rememberTr(&mut self, tr: Rc<RefCell<UITextRenderer>>) {
+    pub(crate) fn rememberTr(&mut self, tr: Rc<RefCell<UITextRenderer>>) {
         self.measureTr = Some(tr.clone());
     }
-    fn caretViewX(&self, tr: &Rc<RefCell<UITextRenderer>>, line: i64, col: i64) -> i64 {
-        return EditorLayout::caretViewX(&self.layout, tr, &self.buf.clone(), line, col);
+    pub(crate) fn caretViewX(&self, tr: &Rc<RefCell<UITextRenderer>>, line: i64, col: i64) -> i64 {
+        return EditorLayout::caret_view_x(&self.layout, tr, &self.buf.clone(), line, col);
     }
     pub fn ensureCaretX(&mut self) {
         if self.measureTr.is_none() {
@@ -1280,26 +1282,26 @@ impl ScriptEditor {
         let mut _tmp_3633 = self.buf.clone();
         let mut _tmp_3634 = self.sel.borrow().caret.borrow().line.clone();
         let mut _tmp_3635 = self.sel.borrow().caret.borrow().col.clone();
-        let cx: i64 = EditorLayout::caretPixelX(
+        let cx: i64 = EditorLayout::caret_pixel_x(
             &self.layout,
             &tr,
             &_tmp_3633,
             _tmp_3634,
             _tmp_3635
         );
-        let left: i64 = EditorLayout::contentX(&self.layout);
+        let left: i64 = EditorLayout::content_x(&self.layout);
         let view: i64 = self.textViewW();
         let rel: i64 = cx - left;
-        if rel < self.layout.borrow().scrollX {
-            self.layout.borrow_mut().scrollX = rel;
+        if rel < self.layout.borrow().scroll_x {
+            self.layout.borrow_mut().scroll_x = rel;
         }
-        let right: i64 = (self.layout.borrow().scrollX + view) - 2;
+        let right: i64 = (self.layout.borrow().scroll_x + view) - 2;
         if rel > right {
-            self.layout.borrow_mut().scrollX = (rel - view) + 2;
+            self.layout.borrow_mut().scroll_x = (rel - view) + 2;
         }
         self.clampHScroll();
     }
-    fn paintHScroll(&self, dl: &Rc<RefCell<EVGDisplayList>>) {
+    pub(crate) fn paintHScroll(&self, dl: &Rc<RefCell<EVGDisplayList>>) {
         if self.hScrollH() <= 0 {
             return;
         }
@@ -1338,7 +1340,7 @@ impl ScriptEditor {
             thumb_w = track_w;
         }
         let travel: f64 = track_w - thumb_w;
-        let mut thumb_x: f64 = (x0 + 4.0) + (travel * (self.layout.borrow().scrollX as f64)) / (max_x as f64);
+        let mut thumb_x: f64 = (x0 + 4.0) + (travel * (self.layout.borrow().scroll_x as f64)) / (max_x as f64);
         if max_x <= 0 {
             thumb_x = x0 + 4.0;
         }
@@ -1350,7 +1352,7 @@ impl ScriptEditor {
         self.pushRect(dl, thumb_x, thumb_y, thumb_w, thumb_h, &self.theme.borrow().hBarThumb.clone());
     }
     /// --- painting -------------------------------------------------------------
-    fn pushRect(&self, dl: &Rc<RefCell<EVGDisplayList>>, x: f64, y: f64, w: f64, h: f64, col: &Rc<RefCell<EVGColor>>) {
+    pub(crate) fn pushRect(&self, dl: &Rc<RefCell<EVGDisplayList>>, x: f64, y: f64, w: f64, h: f64, col: &Rc<RefCell<EVGColor>>) {
         let mut c: Rc<RefCell<EVGDrawCmd>> = Rc::new(RefCell::new(EVGDrawCmd::new()));
         c.borrow_mut().kind = 0;
         c.borrow_mut().x = x;
@@ -1363,7 +1365,7 @@ impl ScriptEditor {
         c.borrow_mut().a = EVGColor::alpha(&col);
         dl.borrow_mut().cmds.push(c.clone());
     }
-    fn pushClip(&self, dl: &Rc<RefCell<EVGDisplayList>>, x: f64, y: f64, w: f64, h: f64) {
+    pub(crate) fn pushClip(&self, dl: &Rc<RefCell<EVGDisplayList>>, x: f64, y: f64, w: f64, h: f64) {
         let mut c: Rc<RefCell<EVGDrawCmd>> = Rc::new(RefCell::new(EVGDrawCmd::new()));
         c.borrow_mut().kind = 4;
         c.borrow_mut().x = x;
@@ -1372,12 +1374,12 @@ impl ScriptEditor {
         c.borrow_mut().h = h;
         dl.borrow_mut().cmds.push(c.clone());
     }
-    fn popClip(&self, dl: &Rc<RefCell<EVGDisplayList>>) {
+    pub(crate) fn popClip(&self, dl: &Rc<RefCell<EVGDisplayList>>) {
         let mut c: Rc<RefCell<EVGDrawCmd>> = Rc::new(RefCell::new(EVGDrawCmd::new()));
         c.borrow_mut().kind = 5;
         dl.borrow_mut().cmds.push(c.clone());
     }
-    fn pushText(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, s: String, x: f64, y: f64, size: f64, col: &Rc<RefCell<EVGColor>>) {
+    pub(crate) fn pushText(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, s: String, x: f64, y: f64, size: f64, col: &Rc<RefCell<EVGColor>>) {
         if s.is_empty() {
             return;
         }
@@ -1385,11 +1387,11 @@ impl ScriptEditor {
         c.borrow_mut().kind = 3;
         c.borrow_mut().x = x;
         c.borrow_mut().y = y;
-        c.borrow_mut().w = UITextRenderer::measureWidth(&tr, &s, size);
-        c.borrow_mut().h = UITextRenderer::lineHeight(&tr, size);
+        c.borrow_mut().w = UITextRenderer::measure_width(&tr, &s, size);
+        c.borrow_mut().h = UITextRenderer::line_height(&tr, size);
         c.borrow_mut().text = s.clone();
-        c.borrow_mut().fontFamily = self.fontFamily.clone();
-        c.borrow_mut().fontSize = size;
+        c.borrow_mut().font_family = self.fontFamily.clone();
+        c.borrow_mut().font_size = size;
         c.borrow_mut().r = EVGColor::red(&col);
         c.borrow_mut().g = EVGColor::green(&col);
         c.borrow_mut().b = EVGColor::blue(&col);
@@ -1398,18 +1400,18 @@ impl ScriptEditor {
     }
     /// `blink` is a phase, not a frame count: the page derives it from the
     /// clock so a page that only repaints when something changed still blinks.
-    fn paint(&mut self, dl: &Rc<RefCell<EVGDisplayList>>, tr: Rc<RefCell<UITextRenderer>>, blink: i64) {
+    pub(crate) fn paint(&mut self, dl: &Rc<RefCell<EVGDisplayList>>, tr: Rc<RefCell<UITextRenderer>>, blink: i64) {
         self.rememberTr(tr.clone());
-        EditorLayout::syncMetrics(&self.layout.clone(), &tr);
-        self.layout.borrow_mut().rightInset = self.minimapWidth();
+        EditorLayout::sync_metrics(&self.layout.clone(), &tr);
+        self.layout.borrow_mut().right_inset = self.minimapWidth();
         self.refreshContentWidth(&tr);
         if self.maxScrollX() > 0 {
-            self.layout.borrow_mut().bottomInset = self.hBarSize;
+            self.layout.borrow_mut().bottom_inset = self.hBarSize;
         } else {
-            self.layout.borrow_mut().bottomInset = 0;
+            self.layout.borrow_mut().bottom_inset = 0;
         }
         let mut _tmp_3658 = self.buf.clone();
-        EditorLayout::clampScroll(&self.layout.clone(), &_tmp_3658);
+        EditorLayout::clamp_scroll(&self.layout.clone(), &_tmp_3658);
         self.clampHScroll();
         self.ensureTokens();
         self.ensureDiagnostics();
@@ -1419,26 +1421,26 @@ impl ScriptEditor {
         let h0: f64 = self.layout.borrow().h as f64;
         self.pushRect(dl, x0, y0, w0, h0, &self.theme.borrow().bg.clone());
         let mut _tmp_3661 = self.theme.borrow().gutterBg.clone();
-        self.pushRect(dl, x0, y0, self.layout.borrow().gutterW as f64, h0, &_tmp_3661);
+        self.pushRect(dl, x0, y0, self.layout.borrow().gutter_w as f64, h0, &_tmp_3661);
         let map_w: i64 = self.minimapWidth();
         let clip_w: f64 = w0 - (map_w as f64);
         self.pushClip(dl, x0, y0, clip_w, h0);
-        let first: i64 = EditorLayout::firstVisible(&self.layout);
-        let last: i64 = EditorLayout::lastVisible(&self.layout, &self.buf.clone());
+        let first: i64 = EditorLayout::first_visible(&self.layout);
+        let last: i64 = EditorLayout::last_visible(&self.layout, &self.buf.clone());
         let caret_line: i64 = self.sel.borrow().caret.borrow().line;
         let bar_h: i64 = self.hScrollH();
         let text_h: f64 = h0 - (bar_h as f64);
-        let text_x: f64 = (self.layout.borrow().x + self.layout.borrow().gutterW) as f64;
-        let text_w: f64 = clip_w - (self.layout.borrow().gutterW as f64);
+        let text_x: f64 = (self.layout.borrow().x + self.layout.borrow().gutter_w) as f64;
+        let text_w: f64 = clip_w - (self.layout.borrow().gutter_w as f64);
         // The line the caret is on, banded across the text area — the one piece
         // of chrome that makes a wall of code navigable.
-        if EditorSelection::isCollapsed(&self.sel) {
+        if EditorSelection::is_collapsed(&self.sel) {
             if ((caret_line >= first) && (caret_line <= last)) {
-                let band_y: f64 = (EditorLayout::caretPixelY(&self.layout, caret_line)) as f64;
+                let band_y: f64 = (EditorLayout::caret_pixel_y(&self.layout, caret_line)) as f64;
                 let band_x: f64 = text_x;
                 let band_w: f64 = text_w;
                 let mut _tmp_3667 = self.theme.borrow().currentLine.clone();
-                self.pushRect(dl, band_x, band_y, band_w, self.layout.borrow().lineHeight as f64, &_tmp_3667);
+                self.pushRect(dl, band_x, band_y, band_w, self.layout.borrow().line_height as f64, &_tmp_3667);
             }
         } else {
             self.pushClip(dl, text_x, y0, text_w, text_h);
@@ -1454,7 +1456,7 @@ impl ScriptEditor {
             while mi <= last {
                 let mark: i64 = self.lineMark(mi);
                 if mark > 0 {
-                    let my: f64 = (EditorLayout::caretPixelY(&self.layout, mi)) as f64;
+                    let my: f64 = (EditorLayout::caret_pixel_y(&self.layout, mi)) as f64;
                     let mut band: Rc<RefCell<EVGColor>> = self.theme.borrow()
                         .addedLine.clone()
                         .clone();
@@ -1465,19 +1467,19 @@ impl ScriptEditor {
                         band = self.theme.borrow().removedLine.clone();
                         strip = self.theme.borrow().removedMark.clone();
                     }
-                    self.pushRect(dl, band_x2, my, band_w2, self.layout.borrow().lineHeight as f64, &band);
-                    self.pushRect(dl, x0, my, 3.0, self.layout.borrow().lineHeight as f64, &strip);
+                    self.pushRect(dl, band_x2, my, band_w2, self.layout.borrow().line_height as f64, &band);
+                    self.pushRect(dl, x0, my, 3.0, self.layout.borrow().line_height as f64, &strip);
                 }
                 mi += 1;
             }
         }
         let mut li: i64 = first;
         while li <= last {
-            let ty: i64 = EditorLayout::caretPixelY(&self.layout, li);
+            let ty: i64 = EditorLayout::caret_pixel_y(&self.layout, li);
             let num: String = (li + 1).to_string();
-            let num_size: f64 = self.layout.borrow().fontSize * 0.85;
-            let nw: i64 = (UITextRenderer::measureWidth(&tr, &num, num_size)).floor() as i64;
-            let nx: i64 = ((self.layout.borrow().x + self.layout.borrow().gutterW) - nw) - 8;
+            let num_size: f64 = self.layout.borrow().font_size * 0.85;
+            let nw: i64 = (UITextRenderer::measure_width(&tr, &num, num_size)).floor() as i64;
+            let nx: i64 = ((self.layout.borrow().x + self.layout.borrow().gutter_w) - nw) - 8;
             let mut num_col: Rc<RefCell<EVGColor>> = self.theme.borrow()
                 .gutterText.clone()
                 .clone();
@@ -1497,7 +1499,7 @@ impl ScriptEditor {
         self.pushClip(dl, text_x, y0, text_w, text_h);
         let mut lj: i64 = first;
         while lj <= last {
-            self.paintLine(dl, &tr, lj, EditorLayout::caretPixelY(&self.layout, lj));
+            self.paintLine(dl, &tr, lj, EditorLayout::caret_pixel_y(&self.layout, lj));
             lj += 1;
         }
         // Diagnostics over the text: a squiggle under the span. Gutter marks
@@ -1510,9 +1512,9 @@ impl ScriptEditor {
                 let on: i64 = blink - (blink / 2) * 2;
                 if on == 0 {
                     let cx: i64 = self.caretViewX(&tr, caret_line, self.sel.borrow().caret.borrow().col.clone());
-                    let cy: i64 = EditorLayout::caretPixelY(&self.layout, caret_line);
+                    let cy: i64 = EditorLayout::caret_pixel_y(&self.layout, caret_line);
                     let mut _tmp_3675 = self.theme.borrow().caret.clone();
-                    self.pushRect(dl, cx as f64, cy as f64, 2.0, self.layout.borrow().lineHeight as f64, &_tmp_3675);
+                    self.pushRect(dl, cx as f64, cy as f64, 2.0, self.layout.borrow().line_height as f64, &_tmp_3675);
                 }
             }
         }
@@ -1539,7 +1541,7 @@ impl ScriptEditor {
         edge.borrow_mut().a = EVGColor::alpha(&self.theme.borrow().border);
         dl.borrow_mut().cmds.push(edge.clone());
     }
-    fn paintCompletions(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>) {
+    pub(crate) fn paintCompletions(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>) {
         if !self.completionOpen {
             return;
         }
@@ -1556,13 +1558,13 @@ impl ScriptEditor {
         if self.completionIndex >= shown {
             first = (self.completionIndex - shown) + 1;
         }
-        let row_h: i64 = self.layout.borrow().lineHeight + 2;
+        let row_h: i64 = self.layout.borrow().line_height + 2;
         let mut widest: f64 = 120.0;
         let mut i: i64 = 0;
         while i < shown {
             let mut c: Rc<RefCell<Completion>> = self.completions[(first + i) as usize].clone();
-            let mut _tmp_3680 = self.layout.borrow().fontSize.clone();
-            let w: f64 = UITextRenderer::measureWidth(
+            let mut _tmp_3680 = self.layout.borrow().font_size.clone();
+            let w: f64 = UITextRenderer::measure_width(
                 &tr,
                 &format!("{}   {}", c.borrow().label, c.borrow().detail),
                 _tmp_3680
@@ -1576,12 +1578,12 @@ impl ScriptEditor {
         let box_h: f64 = (row_h * shown) as f64;
         let mut _tmp_3681 = self.completionLine.clone();
         let mut x: f64 = (self.caretViewX(tr, _tmp_3681, self.completionStart.clone())) as f64;
-        let mut y: f64 = ((EditorLayout::caretPixelY(&self.layout, self.completionLine.clone()) + self.layout.borrow().lineHeight) + 2) as f64;
+        let mut y: f64 = ((EditorLayout::caret_pixel_y(&self.layout, self.completionLine.clone()) + self.layout.borrow().line_height) + 2) as f64;
         // Flip above the caret when there is no room below it.
         let bottom: f64 = y + box_h;
         let limit: f64 = (self.layout.borrow().y + self.layout.borrow().h) as f64;
         if bottom > limit {
-            y = (((EditorLayout::caretPixelY(&self.layout, self.completionLine)) as f64) - box_h) - 2.0;
+            y = (((EditorLayout::caret_pixel_y(&self.layout, self.completionLine)) as f64) - box_h) - 2.0;
         }
         let right: f64 = x + box_w;
         let map_w: i64 = self.minimapWidth();
@@ -1629,12 +1631,12 @@ impl ScriptEditor {
                 ink = self.theme.borrow().keyword.clone();
             }
             let mut _tmp_3693 = c2.borrow().label.clone();
-            self.pushText(dl, tr, _tmp_3693, x + 8.0, ry + 1.0, self.layout.borrow().fontSize.clone(), &ink);
+            self.pushText(dl, tr, _tmp_3693, x + 8.0, ry + 1.0, self.layout.borrow().font_size.clone(), &ink);
             let mut _tmp_3695 = c2.borrow().label.clone();
-            let label_w: f64 = UITextRenderer::measureWidth(&tr, &_tmp_3695, self.layout.borrow().fontSize.clone());
+            let label_w: f64 = UITextRenderer::measure_width(&tr, &_tmp_3695, self.layout.borrow().font_size.clone());
             let mut _tmp_3697 = c2.borrow().detail.clone();
             let mut _tmp_3698 = self.theme.borrow().popupDetail.clone();
-            let arg_0 = self.layout.borrow().fontSize * 0.85;
+            let arg_0 = self.layout.borrow().font_size * 0.85;
             self.pushText(dl,
                 tr,
                 _tmp_3697,
@@ -1649,7 +1651,7 @@ impl ScriptEditor {
         if n > shown {
             let more: String = format!("+{} more", n - shown);
             let mut _tmp_3699 = self.theme.borrow().popupDetail.clone();
-            let arg_0 = self.layout.borrow().fontSize * 0.8;
+            let arg_0 = self.layout.borrow().font_size * 0.8;
             self.pushText(dl,
                 tr,
                 more.clone(),
@@ -1663,7 +1665,7 @@ impl ScriptEditor {
     /// A wave, drawn as rectangles rather than a font glyph or a path: every
     /// backend this editor runs on can draw a rectangle, and the SDL binary has
     /// no shape library at all.
-    fn paintSquiggle(&self, dl: &Rc<RefCell<EVGDisplayList>>, x0: f64, y: f64, x1: f64, col: &Rc<RefCell<EVGColor>>) {
+    pub(crate) fn paintSquiggle(&self, dl: &Rc<RefCell<EVGDisplayList>>, x0: f64, y: f64, x1: f64, col: &Rc<RefCell<EVGColor>>) {
         let mut x: f64 = x0;
         let step: f64 = 3.0;
         let mut up: bool = true;
@@ -1684,17 +1686,17 @@ impl ScriptEditor {
             x += step;
         }
     }
-    fn paintDiagnosticSquiggles(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64) {
+    pub(crate) fn paintDiagnosticSquiggles(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64) {
         self.paintDiagnosticsAt(dl, tr, first, last, false);
     }
-    fn paintDiagnosticMarks(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64) {
+    pub(crate) fn paintDiagnosticMarks(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64) {
         self.paintDiagnosticsAt(dl, tr, first, last, true);
     }
-    fn paintDiagnostics(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64) {
+    pub(crate) fn paintDiagnostics(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64) {
         self.paintDiagnosticSquiggles(dl, tr, first, last);
         self.paintDiagnosticMarks(dl, tr, first, last);
     }
-    fn paintDiagnosticsAt(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64, marks: bool) {
+    pub(crate) fn paintDiagnosticsAt(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64, marks: bool) {
         let mut i: i64 = 0;
         let n: i64 = self.diagnostics.len() as i64;
         while i < n {
@@ -1707,10 +1709,10 @@ impl ScriptEditor {
                 if ((line >= first) && (line <= last)) {
                     if marks {
                         let gx: f64 = (self.layout.borrow().x + 4) as f64;
-                        let gy: f64 = (EditorLayout::caretPixelY(&self.layout, line) + 5) as f64;
-                        self.pushRect(dl, gx, gy, 3.0, (self.layout.borrow().lineHeight - 10) as f64, &col);
+                        let gy: f64 = (EditorLayout::caret_pixel_y(&self.layout, line) + 5) as f64;
+                        self.pushRect(dl, gx, gy, 3.0, (self.layout.borrow().line_height - 10) as f64, &col);
                     } else {
-                        let text: String = EditorBuffer::lineAt(&self.buf, line);
+                        let text: String = EditorBuffer::line_at(&self.buf, line);
                         let __len: i64 = CeNative::str_len(&text);
                         let mut c0: i64 = 0;
                         let mut c1: i64 = __len;
@@ -1738,7 +1740,7 @@ impl ScriptEditor {
                         if wide < 6.0 {
                             x1 = x0 + 6;
                         }
-                        let y_base: f64 = ((EditorLayout::caretPixelY(&self.layout, line) + self.layout.borrow().lineHeight) - 3) as f64;
+                        let y_base: f64 = ((EditorLayout::caret_pixel_y(&self.layout, line) + self.layout.borrow().line_height) - 3) as f64;
                         self.paintSquiggle(dl, x0 as f64, y_base, x1 as f64, &col);
                     }
                 }
@@ -1747,14 +1749,14 @@ impl ScriptEditor {
             i += 1;
         }
     }
-    fn paintSelection(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64) {
+    pub(crate) fn paintSelection(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, first: i64, last: i64) {
         let mut a: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
         let mut b: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
         EditorSelection::normalized(&self.sel.clone(), &a, &b);
         let mut line: i64 = a.borrow().line;
         while line <= b.borrow().line {
             if ((line >= first) && (line <= last)) {
-                let s: String = EditorBuffer::lineAt(&self.buf, line);
+                let s: String = EditorBuffer::line_at(&self.buf, line);
                 let __len: i64 = CeNative::str_len(&s);
                 let mut c0: i64 = 0;
                 let mut c1: i64 = __len;
@@ -1784,9 +1786,9 @@ impl ScriptEditor {
                 if rw < 2 {
                     rw = 2;
                 }
-                let sy: i64 = EditorLayout::caretPixelY(&self.layout, line);
+                let sy: i64 = EditorLayout::caret_pixel_y(&self.layout, line);
                 let mut _tmp_3709 = self.theme.borrow().selection.clone();
-                let arg_0 = self.layout.borrow().lineHeight as f64;
+                let arg_0 = self.layout.borrow().line_height as f64;
                 self.pushRect(dl,
                     x0 as f64,
                     sy as f64,
@@ -1798,8 +1800,8 @@ impl ScriptEditor {
             line += 1;
         }
     }
-    fn paintLine(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, line: i64, ty: i64) {
-        let s: String = EditorBuffer::lineAt(&self.buf, line);
+    pub(crate) fn paintLine(&self, dl: &Rc<RefCell<EVGDisplayList>>, tr: &Rc<RefCell<UITextRenderer>>, line: i64, ty: i64) {
+        let s: String = EditorBuffer::line_at(&self.buf, line);
         if s.is_empty() {
             return;
         }
@@ -1807,7 +1809,7 @@ impl ScriptEditor {
         let n: i64 = toks.borrow().count();
         if n == 0 {
             let plain_x: i64 = self.caretViewX(tr, line, 0);
-            let mut _tmp_3711 = self.layout.borrow().fontSize.clone();
+            let mut _tmp_3711 = self.layout.borrow().font_size.clone();
             let mut _tmp_3712 = self.theme.borrow().plain.clone();
             self.pushText(dl,
                 tr,
@@ -1826,7 +1828,7 @@ impl ScriptEditor {
             let part: String = CeNative::substr(&s, t.borrow().start, stop);
             let px: i64 = self.caretViewX(tr, line, t.borrow().start.clone());
             let mut col: Rc<RefCell<EVGColor>> = self.theme.borrow().forKind(t.borrow().kind.clone());
-            let mut _tmp_3716 = self.layout.borrow().fontSize.clone();
+            let mut _tmp_3716 = self.layout.borrow().font_size.clone();
             self.pushText(dl,
                 tr,
                 part.clone(),
@@ -1838,7 +1840,7 @@ impl ScriptEditor {
             i += 1;
         }
     }
-    fn paintMinimap(&self, dl: &Rc<RefCell<EVGDisplayList>>) {
+    pub(crate) fn paintMinimap(&self, dl: &Rc<RefCell<EVGDisplayList>>) {
         let mw: i64 = self.minimapWidth();
         if mw <= 0 {
             return;
@@ -1850,7 +1852,7 @@ impl ScriptEditor {
         self.pushRect(dl, x0, y0, w0, h0, &self.theme.borrow().minimapBg.clone());
         self.pushRect(dl, x0, y0, 1.0, h0, &self.theme.borrow().minimapEdge.clone());
         self.pushClip(dl, x0, y0, w0, h0);
-        let n: i64 = EditorBuffer::lineCount(&self.buf);
+        let n: i64 = EditorBuffer::line_count(&self.buf);
         if n < 1 {
             self.popClip(dl);
             return;
@@ -1864,7 +1866,7 @@ impl ScriptEditor {
         }
         // Selection first, so the tokens sit on top of it the way they do in
         // the text — a selected region is a wash, not a replacement.
-        if !EditorSelection::isCollapsed(&self.sel) {
+        if !EditorSelection::is_collapsed(&self.sel) {
             let mut a: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
             let mut b: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
             EditorSelection::normalized(&self.sel.clone(), &a, &b);
@@ -1934,9 +1936,9 @@ impl ScriptEditor {
         }
         // The slider: the visible window, drawn last so it tints the specks
         // rather than hiding them.
-        let vis: i64 = EditorLayout::visibleLineCount(&self.layout);
+        let vis: i64 = EditorLayout::visible_line_count(&self.layout);
         let pic_h: f64 = self.minimapPictureH();
-        let mut slider_y: f64 = y0 + (self.layout.borrow().scrollLine as f64) * scale;
+        let mut slider_y: f64 = y0 + (self.layout.borrow().scroll_line as f64) * scale;
         let mut slider_h: f64 = (vis as f64) * scale;
         let pic_bottom: f64 = y0 + pic_h;
         if slider_h > pic_h {
@@ -1973,11 +1975,11 @@ impl ScriptEditor {
         }
         self.popClip(dl);
     }
-    fn paintMinimapLine(&self, dl: &Rc<RefCell<EVGDisplayList>>, line: i64, x0: f64, y: f64, max_w: f64, h: f64) {
+    pub(crate) fn paintMinimapLine(&self, dl: &Rc<RefCell<EVGDisplayList>>, line: i64, x0: f64, y: f64, max_w: f64, h: f64) {
         if h < 0.5 {
             return;
         }
-        let s: String = EditorBuffer::lineAt(&self.buf, line);
+        let s: String = EditorBuffer::line_at(&self.buf, line);
         if s.is_empty() {
             return;
         }
@@ -2026,7 +2028,7 @@ impl ScriptEditor {
     /// One faint rectangle per run of letters that share a colour and a
     /// fill. Neighbouring `l`s stay one command; a `.` next to an `R` does
     /// not, because they do not occupy the cell the same way.
-    fn paintMinimapSpan(&self, dl: &Rc<RefCell<EVGDisplayList>>, s: &str, from: i64, __len: i64, x0: f64, y: f64, h: f64, char_w: f64, limit: f64, ink: &Rc<RefCell<EVGColor>>) {
+    pub(crate) fn paintMinimapSpan(&self, dl: &Rc<RefCell<EVGDisplayList>>, s: &str, from: i64, __len: i64, x0: f64, y: f64, h: f64, char_w: f64, limit: f64, ink: &Rc<RefCell<EVGColor>>) {
         let n: i64 = CeNative::str_len(&s);
         let mut i: i64 = from;
         let mut stop: i64 = from + __len;
@@ -2097,7 +2099,7 @@ impl ScriptEditor {
             );
         }
     }
-    fn paintMinimapDots(&self, dl: &Rc<RefCell<EVGDisplayList>>, x0: f64, y: f64, h: f64, char_w: f64, limit: f64, col: i64, __len: i64, ink: &Rc<RefCell<EVGColor>>, fill: f64) {
+    pub(crate) fn paintMinimapDots(&self, dl: &Rc<RefCell<EVGDisplayList>>, x0: f64, y: f64, h: f64, char_w: f64, limit: f64, col: i64, __len: i64, ink: &Rc<RefCell<EVGColor>>, fill: f64) {
         if __len <= 0 {
             return;
         }
@@ -2124,35 +2126,35 @@ impl ScriptEditor {
         self.pushRect(dl, rx, y, rw, h, &speck);
     }
     /// --- editing --------------------------------------------------------------
-    fn markEdited(&mut self, p: &Rc<RefCell<EditorPos>>) {
+    pub(crate) fn markEdited(&mut self, p: &Rc<RefCell<EditorPos>>) {
         self.lastEditMs = wall_clock_ms();
         let mut _tmp_3737 = p.borrow().line.clone();
         let mut _tmp_3738 = p.borrow().col.clone();
-        EditorSelection::setCaret(&self.sel.clone(), _tmp_3737, _tmp_3738);
-        EditorSelection::collapseToCaret(&self.sel.clone());
-        self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+        EditorSelection::set_caret(&self.sel.clone(), _tmp_3737, _tmp_3738);
+        EditorSelection::collapse_to_caret(&self.sel.clone());
+        self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
         let mut _tmp_3744 = self.buf.clone();
         let mut _tmp_3745 = self.sel.clone();
-        EditorLayout::ensureCaretVisible(&self.layout.clone(), &_tmp_3744, &_tmp_3745);
+        EditorLayout::ensure_caret_visible(&self.layout.clone(), &_tmp_3744, &_tmp_3745);
         self.ensureCaretX();
         self.dirty = true;
     }
     pub fn moveCaret(&mut self, line: i64, col: i64, extend: bool) {
         let mut p: Rc<RefCell<EditorPos>> = EditorPos::create(line, col);
-        EditorBuffer::clampPos(&self.buf.clone(), &p);
+        EditorBuffer::clamp_pos(&self.buf.clone(), &p);
         let mut _tmp_3750 = p.borrow().line.clone();
         let mut _tmp_3751 = p.borrow().col.clone();
-        EditorSelection::setCaret(&self.sel.clone(), _tmp_3750, _tmp_3751);
+        EditorSelection::set_caret(&self.sel.clone(), _tmp_3750, _tmp_3751);
         if !extend {
-            EditorSelection::collapseToCaret(&self.sel.clone());
+            EditorSelection::collapse_to_caret(&self.sel.clone());
         }
         let mut _tmp_3756 = self.buf.clone();
         let mut _tmp_3757 = self.sel.clone();
-        EditorLayout::ensureCaretVisible(&self.layout.clone(), &_tmp_3756, &_tmp_3757);
+        EditorLayout::ensure_caret_visible(&self.layout.clone(), &_tmp_3756, &_tmp_3757);
         self.ensureCaretX();
     }
     pub fn deleteSelection(&mut self) -> bool {
-        if EditorSelection::isCollapsed(&self.sel) {
+        if EditorSelection::is_collapsed(&self.sel) {
             return false;
         }
         let mut a: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
@@ -2162,7 +2164,7 @@ impl ScriptEditor {
         let mut _tmp_3764 = a.borrow().col.clone();
         let mut _tmp_3765 = b.borrow().line.clone();
         let mut _tmp_3766 = b.borrow().col.clone();
-        let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::deleteRange(
+        let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::delete_range(
             &self.buf,
             _tmp_3763,
             _tmp_3764,
@@ -2176,7 +2178,7 @@ impl ScriptEditor {
         self.deleteSelection();
         let mut _tmp_3768 = self.sel.borrow().caret.borrow().line.clone();
         let mut _tmp_3769 = self.sel.borrow().caret.borrow().col.clone();
-        let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::insertText(
+        let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::insert_text(
             &self.buf,
             _tmp_3768,
             _tmp_3769,
@@ -2189,7 +2191,7 @@ impl ScriptEditor {
     /// script from drifting left as it is written.
     pub fn insertNewline(&mut self) {
         self.deleteSelection();
-        let line: String = EditorBuffer::lineAt(&self.buf, self.sel.borrow().caret.borrow().line.clone());
+        let line: String = EditorBuffer::line_at(&self.buf, self.sel.borrow().caret.borrow().line.clone());
         let mut indent: String = String::new();
         let mut i: i64 = 0;
         let n: i64 = CeNative::str_len(&line);
@@ -2226,7 +2228,7 @@ impl ScriptEditor {
     /// what people type); a range is always a block indent, never a replace.
     pub fn indentSelection(&mut self, outdent: bool) {
         self.closeCompletions();
-        if EditorSelection::isCollapsed(&self.sel) && !outdent {
+        if EditorSelection::is_collapsed(&self.sel) && !outdent {
             self.insert("  ");
             return;
         }
@@ -2258,7 +2260,7 @@ impl ScriptEditor {
         let mut built: String = String::new();
         let mut i: i64 = first;
         while i <= last {
-            let line: String = EditorBuffer::lineAt(&self.buf, i);
+            let line: String = EditorBuffer::line_at(&self.buf, i);
             let mut delta: i64 = 0;
             let mut shifted: String = line.clone();
             if outdent {
@@ -2281,25 +2283,25 @@ impl ScriptEditor {
             }
             i += 1;
         }
-        let last_len: i64 = CeNative::str_len(&EditorBuffer::lineAt(&self.buf, last));
-        EditorBuffer::replaceRange(&self.buf.clone(), first, 0, last, last_len, built.clone(), true);
+        let last_len: i64 = CeNative::str_len(&EditorBuffer::line_at(&self.buf, last));
+        EditorBuffer::replace_range(&self.buf.clone(), first, 0, last, last_len, built.clone(), true);
         let a_col: i64 = ScriptEditor::adjustIndentCol(a.borrow().col.clone(), a_delta);
         let b_col: i64 = ScriptEditor::adjustIndentCol(b.borrow().col.clone(), b_delta);
         if caret_at_end {
             let mut _tmp_3785 = a.borrow().line.clone();
-            EditorSelection::setAnchor(&self.sel.clone(), _tmp_3785, a_col);
+            EditorSelection::set_anchor(&self.sel.clone(), _tmp_3785, a_col);
             let mut _tmp_3788 = b.borrow().line.clone();
-            EditorSelection::setCaret(&self.sel.clone(), _tmp_3788, b_col);
+            EditorSelection::set_caret(&self.sel.clone(), _tmp_3788, b_col);
         } else {
             let mut _tmp_3791 = b.borrow().line.clone();
-            EditorSelection::setAnchor(&self.sel.clone(), _tmp_3791, b_col);
+            EditorSelection::set_anchor(&self.sel.clone(), _tmp_3791, b_col);
             let mut _tmp_3794 = a.borrow().line.clone();
-            EditorSelection::setCaret(&self.sel.clone(), _tmp_3794, a_col);
+            EditorSelection::set_caret(&self.sel.clone(), _tmp_3794, a_col);
         }
-        self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+        self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
         let mut _tmp_3798 = self.buf.clone();
         let mut _tmp_3799 = self.sel.clone();
-        EditorLayout::ensureCaretVisible(&self.layout.clone(), &_tmp_3798, &_tmp_3799);
+        EditorLayout::ensure_caret_visible(&self.layout.clone(), &_tmp_3798, &_tmp_3799);
         self.ensureCaretX();
         self.lastEditMs = wall_clock_ms();
         self.dirty = true;
@@ -2315,8 +2317,8 @@ impl ScriptEditor {
             if line == 0 {
                 return;
             }
-            let prev_len: i64 = CeNative::str_len(&EditorBuffer::lineAt(&self.buf, line - 1));
-            let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::deleteRange(
+            let prev_len: i64 = CeNative::str_len(&EditorBuffer::line_at(&self.buf, line - 1));
+            let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::delete_range(
                 &self.buf,
                 line - 1,
                 prev_len,
@@ -2326,7 +2328,7 @@ impl ScriptEditor {
             self.markEdited(&p);
             return;
         }
-        let mut before: Rc<RefCell<EditorPos>> = EditorBuffer::moveCodepoint(
+        let mut before: Rc<RefCell<EditorPos>> = EditorBuffer::move_codepoint(
             &self.buf,
             line,
             col,
@@ -2334,7 +2336,7 @@ impl ScriptEditor {
         );
         let mut _tmp_3805 = before.borrow().line.clone();
         let mut _tmp_3806 = before.borrow().col.clone();
-        let mut p2: Rc<RefCell<EditorPos>> = EditorBuffer::deleteRange(
+        let mut p2: Rc<RefCell<EditorPos>> = EditorBuffer::delete_range(
             &self.buf,
             _tmp_3805,
             _tmp_3806,
@@ -2350,12 +2352,12 @@ impl ScriptEditor {
         }
         let line: i64 = self.sel.borrow().caret.borrow().line;
         let col: i64 = self.sel.borrow().caret.borrow().col;
-        let __len: i64 = CeNative::str_len(&EditorBuffer::lineAt(&self.buf, line));
+        let __len: i64 = CeNative::str_len(&EditorBuffer::line_at(&self.buf, line));
         if col >= __len {
-            if line >= EditorBuffer::lineCount(&self.buf) - 1 {
+            if line >= EditorBuffer::line_count(&self.buf) - 1 {
                 return;
             }
-            let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::deleteRange(
+            let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::delete_range(
                 &self.buf,
                 line,
                 col,
@@ -2365,7 +2367,7 @@ impl ScriptEditor {
             self.markEdited(&p);
             return;
         }
-        let mut after: Rc<RefCell<EditorPos>> = EditorBuffer::moveCodepoint(
+        let mut after: Rc<RefCell<EditorPos>> = EditorBuffer::move_codepoint(
             &self.buf,
             line,
             col,
@@ -2373,7 +2375,7 @@ impl ScriptEditor {
         );
         let mut _tmp_3812 = after.borrow().line.clone();
         let mut _tmp_3813 = after.borrow().col.clone();
-        let mut p2: Rc<RefCell<EditorPos>> = EditorBuffer::deleteRange(
+        let mut p2: Rc<RefCell<EditorPos>> = EditorBuffer::delete_range(
             &self.buf,
             line,
             col,
@@ -2383,7 +2385,7 @@ impl ScriptEditor {
         self.markEdited(&p2);
     }
     pub fn moveVertical(&mut self, delta: i64, extend: bool) {
-        let mut want: i64 = self.layout.borrow().preferCol;
+        let mut want: i64 = self.layout.borrow().prefer_col;
         if want < self.sel.borrow().caret.borrow().col {
             want = self.sel.borrow().caret.borrow().col;
         }
@@ -2391,18 +2393,18 @@ impl ScriptEditor {
         if line < 0 {
             line = 0;
         }
-        let max_line: i64 = EditorBuffer::lineCount(&self.buf) - 1;
+        let max_line: i64 = EditorBuffer::line_count(&self.buf) - 1;
         if line > max_line {
             line = max_line;
         }
-        let __len: i64 = CeNative::str_len(&EditorBuffer::lineAt(&self.buf, line));
+        let __len: i64 = CeNative::str_len(&EditorBuffer::line_at(&self.buf, line));
         let mut col: i64 = want;
         if col > __len {
             col = __len;
         }
         let keep: i64 = want;
         self.moveCaret(line, col, extend);
-        self.layout.borrow_mut().preferCol = keep;
+        self.layout.borrow_mut().prefer_col = keep;
     }
     /// --- the clipboard's half of the model --------------------------------------
     /// The host owns the system clipboard; what belongs here is the text a
@@ -2412,7 +2414,7 @@ impl ScriptEditor {
     /// the mirror only ever holds the caret's line, so a three-line selection
     /// copied one line and lost the rest without saying so.
     pub fn selectionText(&self) -> String {
-        if EditorSelection::isCollapsed(&self.sel) {
+        if EditorSelection::is_collapsed(&self.sel) {
             return String::new();
         }
         let mut a: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
@@ -2422,7 +2424,7 @@ impl ScriptEditor {
         let mut _tmp_3821 = a.borrow().col.clone();
         let mut _tmp_3822 = b.borrow().line.clone();
         let mut _tmp_3823 = b.borrow().col.clone();
-        return EditorBuffer::textInRange(
+        return EditorBuffer::text_in_range(
             &self.buf,
             _tmp_3820,
             _tmp_3821,
@@ -2441,10 +2443,10 @@ impl ScriptEditor {
     }
     pub fn selectAll(&mut self) {
         let mut _tmp_3825 = self.buf.clone();
-        EditorSelection::selectAll(&self.sel.clone(), &_tmp_3825);
+        EditorSelection::select_all(&self.sel.clone(), &_tmp_3825);
         let mut _tmp_3828 = self.buf.clone();
         let mut _tmp_3829 = self.sel.clone();
-        EditorLayout::ensureCaretVisible(&self.layout.clone(), &_tmp_3828, &_tmp_3829);
+        EditorLayout::ensure_caret_visible(&self.layout.clone(), &_tmp_3828, &_tmp_3829);
         self.ensureCaretX();
     }
     pub fn undo(&mut self) {
@@ -2461,11 +2463,11 @@ impl ScriptEditor {
     /// the same ones double-click selection uses, so a word means one thing in
     /// this editor rather than two.
     pub fn wordLeftCol(&self, line: i64, col: i64) -> i64 {
-        let s: String = EditorBuffer::lineAt(&self.buf, line);
+        let s: String = EditorBuffer::line_at(&self.buf, line);
         let mut i: i64 = col;
         while i > 0 {
             let ch: i64 = CeNative::char_at(&s, i - 1);
-            if EditorWord::isWordChar(ch) {
+            if EditorWord::is_word_char(ch) {
                 break;
             }
             i -= 1;
@@ -2473,15 +2475,15 @@ impl ScriptEditor {
         if i == 0 {
             return 0;
         }
-        EditorWord::wordStart(&s, i - 1)
+        EditorWord::word_start(&s, i - 1)
     }
     pub fn wordRightCol(&self, line: i64, col: i64) -> i64 {
-        let s: String = EditorBuffer::lineAt(&self.buf, line);
+        let s: String = EditorBuffer::line_at(&self.buf, line);
         let n: i64 = CeNative::str_len(&s);
         let mut i: i64 = col;
         while i < n {
             let ch: i64 = CeNative::char_at(&s, i);
-            if EditorWord::isWordChar(ch) {
+            if EditorWord::is_word_char(ch) {
                 break;
             }
             i += 1;
@@ -2489,7 +2491,7 @@ impl ScriptEditor {
         if i >= n {
             return n;
         }
-        EditorWord::wordEnd(&s, i)
+        EditorWord::word_end(&s, i)
     }
     pub fn moveWord(&mut self, dir: i64, extend: bool) {
         let line: i64 = self.sel.borrow().caret.borrow().line;
@@ -2499,9 +2501,9 @@ impl ScriptEditor {
                 if line == 0 {
                     return;
                 }
-                let prev_len: i64 = CeNative::str_len(&EditorBuffer::lineAt(&self.buf, line - 1));
+                let prev_len: i64 = CeNative::str_len(&EditorBuffer::line_at(&self.buf, line - 1));
                 self.moveCaret(line - 1, prev_len, extend);
-                self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+                self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
                 return;
             }
             let mut target: i64 = self.wordLeftCol(line, col);
@@ -2509,16 +2511,16 @@ impl ScriptEditor {
                 target = col - 1;
             }
             self.moveCaret(line, target, extend);
-            self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+            self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
             return;
         }
-        let __len: i64 = CeNative::str_len(&EditorBuffer::lineAt(&self.buf, line));
+        let __len: i64 = CeNative::str_len(&EditorBuffer::line_at(&self.buf, line));
         if col >= __len {
-            if line >= EditorBuffer::lineCount(&self.buf) - 1 {
+            if line >= EditorBuffer::line_count(&self.buf) - 1 {
                 return;
             }
             self.moveCaret(line + 1, 0, extend);
-            self.layout.borrow_mut().preferCol = 0;
+            self.layout.borrow_mut().prefer_col = 0;
             return;
         }
         let mut right: i64 = self.wordRightCol(line, col);
@@ -2526,24 +2528,24 @@ impl ScriptEditor {
             right = col + 1;
         }
         self.moveCaret(line, right, extend);
-        self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+        self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
     }
     pub fn moveDocumentStart(&mut self, extend: bool) {
         self.moveCaret(0, 0, extend);
-        self.layout.borrow_mut().preferCol = 0;
+        self.layout.borrow_mut().prefer_col = 0;
     }
     pub fn moveDocumentEnd(&mut self, extend: bool) {
-        let last: i64 = EditorBuffer::lineCount(&self.buf) - 1;
-        let __len: i64 = CeNative::str_len(&EditorBuffer::lineAt(&self.buf, last));
+        let last: i64 = EditorBuffer::line_count(&self.buf) - 1;
+        let __len: i64 = CeNative::str_len(&EditorBuffer::line_at(&self.buf, last));
         self.moveCaret(last, __len, extend);
-        self.layout.borrow_mut().preferCol = __len;
+        self.layout.borrow_mut().prefer_col = __len;
     }
     /// True when it did the collapsing: an open selection and no Shift.
     pub fn collapseToEdge(&mut self, to_end: bool, shift: bool) -> bool {
         if shift {
             return false;
         }
-        if EditorSelection::isCollapsed(&self.sel) {
+        if EditorSelection::is_collapsed(&self.sel) {
             return false;
         }
         let mut a: Rc<RefCell<EditorPos>> = Rc::new(RefCell::new(EditorPos::new()));
@@ -2556,7 +2558,7 @@ impl ScriptEditor {
             let mut _tmp_3848 = a.borrow().line.clone();
             self.moveCaret(_tmp_3848, a.borrow().col.clone(), false);
         }
-        self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+        self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
         true
     }
     /// --- input ----------------------------------------------------------------
@@ -2621,7 +2623,7 @@ impl ScriptEditor {
             }
             let mut _tmp_3852 = self.sel.borrow().caret.borrow().line.clone();
             let mut _tmp_3853 = self.sel.borrow().caret.borrow().col.clone();
-            let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::moveCodepoint(
+            let mut p: Rc<RefCell<EditorPos>> = EditorBuffer::move_codepoint(
                 &self.buf,
                 _tmp_3852,
                 _tmp_3853,
@@ -2629,7 +2631,7 @@ impl ScriptEditor {
             );
             let mut _tmp_3854 = p.borrow().line.clone();
             self.moveCaret(_tmp_3854, p.borrow().col.clone(), shift);
-            self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+            self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
             return true;
         }
         if key == UIKey::right() {
@@ -2642,7 +2644,7 @@ impl ScriptEditor {
             }
             let mut _tmp_3858 = self.sel.borrow().caret.borrow().line.clone();
             let mut _tmp_3859 = self.sel.borrow().caret.borrow().col.clone();
-            let mut p2: Rc<RefCell<EditorPos>> = EditorBuffer::moveCodepoint(
+            let mut p2: Rc<RefCell<EditorPos>> = EditorBuffer::move_codepoint(
                 &self.buf,
                 _tmp_3858,
                 _tmp_3859,
@@ -2650,7 +2652,7 @@ impl ScriptEditor {
             );
             let mut _tmp_3860 = p2.borrow().line.clone();
             self.moveCaret(_tmp_3860, p2.borrow().col.clone(), shift);
-            self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+            self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
             return true;
         }
         if key == UIKey::up() {
@@ -2661,13 +2663,13 @@ impl ScriptEditor {
             self.moveVertical(1, shift);
             return true;
         }
-        if key == UIKey::pageUp() {
-            let step: i64 = EditorLayout::visibleLineCount(&self.layout);
+        if key == UIKey::page_up() {
+            let step: i64 = EditorLayout::visible_line_count(&self.layout);
             self.moveVertical(0 - step, shift);
             return true;
         }
-        if key == UIKey::pageDown() {
-            let step2: i64 = EditorLayout::visibleLineCount(&self.layout);
+        if key == UIKey::page_down() {
+            let step2: i64 = EditorLayout::visible_line_count(&self.layout);
             self.moveVertical(step2, shift);
             return true;
         }
@@ -2676,8 +2678,9 @@ impl ScriptEditor {
                 self.moveDocumentStart(shift);
                 return true;
             }
-            self.moveCaret(self.sel.borrow().caret.borrow().line.clone(), 0, shift);
-            self.layout.borrow_mut().preferCol = 0;
+            let line: i64 = self.sel.borrow().caret.borrow().line;
+            self.moveCaret(line, 0, shift);
+            self.layout.borrow_mut().prefer_col = 0;
             return true;
         }
         if key == UIKey::end() {
@@ -2685,9 +2688,10 @@ impl ScriptEditor {
                 self.moveDocumentEnd(shift);
                 return true;
             }
-            let __len: i64 = CeNative::str_len(&EditorBuffer::lineAt(&self.buf, self.sel.borrow().caret.borrow().line.clone()));
-            self.moveCaret(self.sel.borrow().caret.borrow().line.clone(), __len, shift);
-            self.layout.borrow_mut().preferCol = __len;
+            let line: i64 = self.sel.borrow().caret.borrow().line;
+            let __len: i64 = CeNative::str_len(&EditorBuffer::line_at(&self.buf, line));
+            self.moveCaret(line, __len, shift);
+            self.layout.borrow_mut().prefer_col = __len;
             return true;
         }
         if key == UIKey::backspace() {
@@ -2751,7 +2755,7 @@ impl ScriptEditor {
             self.refreshCompletions();
         } else {
             if self.autoComplete {
-                let line: String = EditorBuffer::lineAt(&self.buf, self.sel.borrow().caret.borrow().line.clone());
+                let line: String = EditorBuffer::line_at(&self.buf, self.sel.borrow().caret.borrow().line.clone());
                 let last_ch: i64 = CeNative::char_at(&s, (CeNative::str_len(&s)) - 1);
                 // A dot is a question on its own — `body.` is asking what a
                 // body has — so it opens the list with no prefix at all.
@@ -2771,7 +2775,7 @@ impl ScriptEditor {
     pub fn requestCompletions(&mut self) -> bool {
         self.openCompletions()
     }
-    fn pointerDown(&mut self, tr: Rc<RefCell<UITextRenderer>>, px: i64, py: i64, extend: bool) {
+    pub(crate) fn pointerDown(&mut self, tr: Rc<RefCell<UITextRenderer>>, px: i64, py: i64, extend: bool) {
         self.focused = true;
         self.rememberTr(tr.clone());
         self.closeCompletions();
@@ -2782,7 +2786,7 @@ impl ScriptEditor {
             return;
         }
         let mut _tmp_3873 = self.buf.clone();
-        let mut hit: Rc<RefCell<EditorPos>> = EditorLayout::hitTest(
+        let mut hit: Rc<RefCell<EditorPos>> = EditorLayout::hit_test(
             &self.layout,
             &tr,
             &_tmp_3873,
@@ -2791,23 +2795,23 @@ impl ScriptEditor {
         );
         let mut _tmp_3874 = hit.borrow().line.clone();
         self.moveCaret(_tmp_3874, hit.borrow().col.clone(), extend);
-        self.layout.borrow_mut().preferCol = self.sel.borrow().caret.borrow().col;
+        self.layout.borrow_mut().prefer_col = self.sel.borrow().caret.borrow().col;
         if !extend {
             let mut _tmp_3878 = hit.borrow().line.clone();
             let mut _tmp_3879 = hit.borrow().col.clone();
-            EditorSelection::setAnchor(&self.sel.clone(), _tmp_3878, _tmp_3879);
+            EditorSelection::set_anchor(&self.sel.clone(), _tmp_3878, _tmp_3879);
         }
     }
     /// Double click takes the word under the pointer, triple click the line —
     /// the two selections every text surface has, and the ones `EditorWord`
     /// already knows how to find, so a word means the same thing here as it does
     /// to Ctrl+arrow.
-    fn selectWordAt(&mut self, tr: &Rc<RefCell<UITextRenderer>>, px: i64, py: i64) {
+    pub(crate) fn selectWordAt(&mut self, tr: &Rc<RefCell<UITextRenderer>>, px: i64, py: i64) {
         if self.tryMinimapPointer(px, py) {
             return;
         }
         let mut _tmp_3882 = self.buf.clone();
-        let mut hit: Rc<RefCell<EditorPos>> = EditorLayout::hitTest(
+        let mut hit: Rc<RefCell<EditorPos>> = EditorLayout::hit_test(
             &self.layout,
             tr,
             &_tmp_3882,
@@ -2823,10 +2827,10 @@ impl ScriptEditor {
         self.focused = true;
         self.closeCompletions();
         let mut p: Rc<RefCell<EditorPos>> = EditorPos::create(line, col);
-        EditorBuffer::clampPos(&self.buf.clone(), &p);
-        let s: String = EditorBuffer::lineAt(&self.buf, p.borrow().line.clone());
-        let mut from: i64 = EditorWord::wordStart(&s, p.borrow().col.clone());
-        let mut to: i64 = EditorWord::wordEnd(&s, p.borrow().col.clone());
+        EditorBuffer::clamp_pos(&self.buf.clone(), &p);
+        let s: String = EditorBuffer::line_at(&self.buf, p.borrow().line.clone());
+        let mut from: i64 = EditorWord::word_start(&s, p.borrow().col.clone());
+        let mut to: i64 = EditorWord::word_end(&s, p.borrow().col.clone());
         if from == to {
             // Clicked whitespace or punctuation — take the character under
             // the pointer, which is what a double-click on a gap does.
@@ -2836,41 +2840,41 @@ impl ScriptEditor {
             }
         }
         let mut _tmp_3892 = p.borrow().line.clone();
-        EditorSelection::setAnchor(&self.sel.clone(), _tmp_3892, from);
+        EditorSelection::set_anchor(&self.sel.clone(), _tmp_3892, from);
         let mut _tmp_3895 = p.borrow().line.clone();
-        EditorSelection::setCaret(&self.sel.clone(), _tmp_3895, to);
-        self.layout.borrow_mut().preferCol = to;
+        EditorSelection::set_caret(&self.sel.clone(), _tmp_3895, to);
+        self.layout.borrow_mut().prefer_col = to;
         let mut _tmp_3898 = self.buf.clone();
         let mut _tmp_3899 = self.sel.clone();
-        EditorLayout::ensureCaretVisible(&self.layout.clone(), &_tmp_3898, &_tmp_3899);
+        EditorLayout::ensure_caret_visible(&self.layout.clone(), &_tmp_3898, &_tmp_3899);
         self.ensureCaretX();
     }
-    fn selectLineAt(&mut self, tr: &Rc<RefCell<UITextRenderer>>, px: i64, py: i64) {
+    pub(crate) fn selectLineAt(&mut self, tr: &Rc<RefCell<UITextRenderer>>, px: i64, py: i64) {
         if self.tryMinimapPointer(px, py) {
             return;
         }
         self.focused = true;
         self.closeCompletions();
         let mut _tmp_3902 = self.buf.clone();
-        let mut hit: Rc<RefCell<EditorPos>> = EditorLayout::hitTest(
+        let mut hit: Rc<RefCell<EditorPos>> = EditorLayout::hit_test(
             &self.layout,
             tr,
             &_tmp_3902,
             px,
             py
         );
-        let __len: i64 = CeNative::str_len(&EditorBuffer::lineAt(&self.buf, hit.borrow().line.clone()));
+        let __len: i64 = CeNative::str_len(&EditorBuffer::line_at(&self.buf, hit.borrow().line.clone()));
         let mut _tmp_3906 = hit.borrow().line.clone();
-        EditorSelection::setAnchor(&self.sel.clone(), _tmp_3906, 0);
+        EditorSelection::set_anchor(&self.sel.clone(), _tmp_3906, 0);
         let mut _tmp_3909 = hit.borrow().line.clone();
-        EditorSelection::setCaret(&self.sel.clone(), _tmp_3909, __len);
-        self.layout.borrow_mut().preferCol = __len;
+        EditorSelection::set_caret(&self.sel.clone(), _tmp_3909, __len);
+        self.layout.borrow_mut().prefer_col = __len;
         let mut _tmp_3912 = self.buf.clone();
         let mut _tmp_3913 = self.sel.clone();
-        EditorLayout::ensureCaretVisible(&self.layout.clone(), &_tmp_3912, &_tmp_3913);
+        EditorLayout::ensure_caret_visible(&self.layout.clone(), &_tmp_3912, &_tmp_3913);
         self.ensureCaretX();
     }
-    fn pointerDrag(&mut self, tr: Rc<RefCell<UITextRenderer>>, px: i64, py: i64) {
+    pub(crate) fn pointerDrag(&mut self, tr: Rc<RefCell<UITextRenderer>>, px: i64, py: i64) {
         self.rememberTr(tr.clone());
         if self.hBarDrag {
             self.jumpHBar(px);
@@ -2881,7 +2885,7 @@ impl ScriptEditor {
             return;
         }
         let mut _tmp_3916 = self.buf.clone();
-        let mut hit: Rc<RefCell<EditorPos>> = EditorLayout::hitTest(
+        let mut hit: Rc<RefCell<EditorPos>> = EditorLayout::hit_test(
             &self.layout,
             &tr,
             &_tmp_3916,
@@ -2897,6 +2901,6 @@ impl ScriptEditor {
     }
     pub fn scrollBy(&self, notches: i64) {
         let mut _tmp_3920 = self.buf.clone();
-        EditorLayout::scrollByLines(&self.layout.clone(), &_tmp_3920, 0 - notches);
+        EditorLayout::scroll_by_lines(&self.layout.clone(), &_tmp_3920, 0 - notches);
     }
 }
