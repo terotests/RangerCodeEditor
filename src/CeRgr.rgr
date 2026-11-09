@@ -4,4 +4,17 @@
 ; closure: rgr.rs includes it once (import_rgr!). They come from the Ranger
 ; checkout this repository sits in (gallery/codeeditor).
 
+Import "../../../lib/evg/EVGColor.rgr"
+Import "../../../lib/evg/EVGDisplayList.rgr"
+Import "../../game_engine/framebuffer.rgr"
+Import "../../game_engine/ui/UIContext.rgr"
+Import "../../game_engine/ui/UIInput.rgr"
+Import "../../game_engine/ui/UITextRenderer.rgr"
+Import "../../text_editor/src/EditorBuffer.rgr"
+Import "../../text_editor/src/EditorLayout.rgr"
+Import "../../text_editor/src/EditorSelection.rgr"
+Import "../../text_editor/src/EditorStyle.rgr"
+Import "../../ts_parser/ts_lexer.rgr"
+Import "../../ts_parser/ts_parser_simple.rgr"
+Import "../../ts_parser/ts_token.rgr"
 Import "CeNative.rgr"

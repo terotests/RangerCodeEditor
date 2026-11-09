@@ -11,49 +11,18 @@ use crate::completion::Completion;
 use crate::editor_diagnostic::EditorDiagnostic;
 use crate::rgr::CeNative;
 
-/// ==============================================================================
-/// EditorLanguage.rgr — the seam a language plugs into
-/// ==============================================================================
-///
-/// The editor knows how to draw a squiggle under a range. It does not know what
-/// a syntax error is, and it must not: JavaScript is one answer, Ranger is a
-/// different one, and a third language should not need the editor to change.
-///
-/// So: a plugin answers three questions.
-///
-///     id()               what it calls itself
-///     handlesFile(name)  is this document mine?
-///     diagnose(source)   what is wrong with it, as ranges
-///
-/// This is the Language Server idea with the server taken out. Nothing here
-/// spawns a process, opens a socket or serializes JSON — a plugin is a class in
-/// the same binary, and `LanguageRegistry.add` is the whole installation step.
-/// That is a deliberate limit rather than a stage: the editor runs in a browser
-/// tab and inside a native SDL binary as well as under Node, and two of those
-/// three have nowhere to run a server. When one is wanted later, the seam is
-/// already the right shape — `diagnose` becomes a request and the record it
-/// returns is already an LSP diagnostic.
-///
-/// What a plugin must not do is take long. `diagnose` runs on the document as it
-/// is being typed, so a plugin that cannot answer in a millisecond should answer
-/// with less: the JavaScript one parses under a line budget and falls back to
-/// structural checks above it.
-/// ==============================================================================
+/// Text helpers every plugin needs. Shared because every language that has
+/// identifiers agrees about this much, and a plugin that disagrees can ignore
+/// them.
 #[derive(Clone)]
-pub struct EditorLanguage {
-}
+pub struct LanguageText {}
 
-impl EditorLanguage {
-    pub fn new() -> Self {
-        Self {
-        }
-    }
-    /// --- helpers every plugin needs --------------------------------------------
+impl LanguageText {
     /// The word being typed, ending at the caret. Shared because every language
     /// that has identifiers agrees about this much, and a plugin that disagrees
     /// can ignore it.
     pub fn prefixAt(line: &str, col: i64) -> String {
-        let start: i64 = EditorLanguage::prefixStart(line, col);
+        let start: i64 = LanguageText::prefixStart(line, col);
         CeNative::substr(&line, start, col)
     }
     pub fn prefixStart(line: &str, col: i64) -> i64 {
@@ -98,7 +67,7 @@ impl EditorLanguage {
             return false;
         }
         let head: String = CeNative::substr(&candidate, 0, pn);
-        EditorLanguage::lower(&head) == EditorLanguage::lower(prefix)
+        LanguageText::lower(&head) == LanguageText::lower(prefix)
     }
     pub fn lower(s: &str) -> String {
         let mut out: String = String::new();
@@ -155,7 +124,7 @@ impl EditorLanguage {
                     let word: String = CeNative::substr(&s, start, i);
                     if (CeNative::str_len(&word)) > 2 {
                         if word != skip {
-                            if !EditorLanguage::isInList(&word, &out) {
+                            if !LanguageText::isInList(&word, &out) {
                                 if (out.len() as i64) < limit {
                                     out.push(word.clone());
                                 }
@@ -213,21 +182,52 @@ impl EditorLanguage {
         out.push(cur);
         out
     }
-    pub fn id(&self) -> String {
+}
+
+/// ==============================================================================
+/// EditorLanguage.rgr — the seam a language plugs into
+/// ==============================================================================
+///
+/// The editor knows how to draw a squiggle under a range. It does not know what
+/// a syntax error is, and it must not: JavaScript is one answer, Ranger is a
+/// different one, and a third language should not need the editor to change.
+///
+/// So: a plugin answers three questions.
+///
+///     id()               what it calls itself
+///     handlesFile(name)  is this document mine?
+///     diagnose(source)   what is wrong with it, as ranges
+///
+/// This is the Language Server idea with the server taken out. Nothing here
+/// spawns a process, opens a socket or serializes JSON — a plugin is a class in
+/// the same binary, and `LanguageRegistry.add` is the whole installation step.
+/// That is a deliberate limit rather than a stage: the editor runs in a browser
+/// tab and inside a native SDL binary as well as under Node, and two of those
+/// three have nowhere to run a server. When one is wanted later, the seam is
+/// already the right shape — `diagnose` becomes a request and the record it
+/// returns is already an LSP diagnostic.
+///
+/// What a plugin must not do is take long. `diagnose` runs on the document as it
+/// is being typed, so a plugin that cannot answer in a millisecond should answer
+/// with less: the JavaScript one parses under a line budget and falls back to
+/// structural checks above it.
+/// ==============================================================================
+pub trait EditorLanguage {
+    fn id(&self) -> String {
         "text".to_string()
     }
-    pub fn label(&self) -> String {
+    fn label(&self) -> String {
         "Plain text".to_string()
     }
     /// By file name, because that is what a host knows before it has read the
     /// document. A plugin that wants to sniff the content can look at the source
     /// in `diagnose` and return nothing.
-    pub fn handlesFile(&self, name: &str) -> bool {
+    fn handlesFile(&self, name: &str) -> bool {
         false
     }
     /// The full pass. It may be expensive — a real parse, a type check, a
     /// compiler — and the editor will keep it off the keystroke path when it is.
-    pub fn diagnose(&self, source: &str) -> Vec<Rc<RefCell<EditorDiagnostic>>> {
+    fn diagnose(&mut self, source: &str) -> Vec<Rc<RefCell<EditorDiagnostic>>> {
         let mut none: Vec<Rc<RefCell<EditorDiagnostic>>> = Vec::new();
         none
     }
@@ -238,14 +238,14 @@ impl EditorLanguage {
     /// Two speeds rather than one, because the alternative is a slow plugin
     /// making the editor slow: measured on a 2 000-line document, a full
     /// JavaScript parse per keystroke cost 72 ms, and the structural pass 1 ms.
-    pub fn quickDiagnose(&self, lines: &[String]) -> Vec<Rc<RefCell<EditorDiagnostic>>> {
+    fn quickDiagnose(&self, lines: &[String]) -> Vec<Rc<RefCell<EditorDiagnostic>>> {
         let mut none: Vec<Rc<RefCell<EditorDiagnostic>>> = Vec::new();
         none
     }
     /// What the text IS, for the painter. The base answer is "one plain run per
     /// line", which is what an unknown file should look like: readable, and
     /// obviously not claiming to understand itself.
-    pub fn tokenize(&self, lines: &[String]) -> Vec<Rc<RefCell<CodeTokenLine>>> {
+    fn tokenize(&self, lines: &[String]) -> Vec<Rc<RefCell<CodeTokenLine>>> {
         let mut out: Vec<Rc<RefCell<CodeTokenLine>>> = Vec::new();
         let mut i: i64 = 0;
         let n: i64 = lines.len() as i64;
@@ -267,42 +267,56 @@ impl EditorLanguage {
     ///
     /// Called on a keystroke, so the same rule as quickDiagnose applies: answer
     /// from what is cheap to know. Neither plugin here parses to do it.
-    pub fn complete(&self, lines: &[String], line: i64, col: i64) -> Vec<Rc<RefCell<Completion>>> {
+    fn complete(&self, lines: &[String], line: i64, col: i64) -> Vec<Rc<RefCell<Completion>>> {
         let mut none: Vec<Rc<RefCell<Completion>>> = Vec::new();
         none
     }
 }
+
+/// The plugin a document nothing claims gets: plain runs, no complaints. An
+/// unknown file type is not an error.
+#[derive(Clone)]
+pub struct PlainText {}
+
+impl PlainText {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+
+impl EditorLanguage for PlainText {}
+
 
 /// The installed plugins, in the order they were added. First one that claims a
 /// file gets it; a document nothing claims gets the fallback, which complains
 /// about nothing.
 #[derive(Clone)]
 pub struct LanguageRegistry {
-    pub plugins: Vec<Rc<RefCell<EditorLanguage>>>,
-    pub none: Rc<RefCell<EditorLanguage>>,
+    pub plugins: Vec<Rc<RefCell<dyn EditorLanguage>>>,
+    pub none: Rc<RefCell<dyn EditorLanguage>>,
 }
 
 impl LanguageRegistry {
     pub fn new() -> Self {
         Self {
             plugins: Vec::new(),
-            none: Rc::new(RefCell::new(EditorLanguage::new())),
+            none: Rc::new(RefCell::new(PlainText::new())),
         }
     }
-    pub fn add(&mut self, lang: Rc<RefCell<EditorLanguage>>) {
+    pub fn add(&mut self, lang: Rc<RefCell<dyn EditorLanguage>>) {
         self.plugins.push(lang.clone());
     }
     pub fn count(&self) -> i64 {
         self.plugins.len() as i64
     }
-    pub fn at(&self, i: i64) -> Rc<RefCell<EditorLanguage>> {
+    pub fn at(&self, i: i64) -> Rc<RefCell<dyn EditorLanguage>> {
         self.plugins[i as usize].clone()
     }
-    pub fn byId(&self, id: &str) -> Rc<RefCell<EditorLanguage>> {
+    pub fn byId(&self, id: &str) -> Rc<RefCell<dyn EditorLanguage>> {
         let mut i: i64 = 0;
         let n: i64 = self.plugins.len() as i64;
         while i < n {
-            let mut lang: Rc<RefCell<EditorLanguage>> = self.plugins[i as usize].clone();
+            let mut lang: Rc<RefCell<dyn EditorLanguage>> = self.plugins[i as usize].clone();
             if lang.borrow().id() == id {
                 return lang;
             }
@@ -310,11 +324,11 @@ impl LanguageRegistry {
         }
         self.none.clone()
     }
-    pub fn forFile(&self, name: &str) -> Rc<RefCell<EditorLanguage>> {
+    pub fn forFile(&self, name: &str) -> Rc<RefCell<dyn EditorLanguage>> {
         let mut i: i64 = 0;
         let n: i64 = self.plugins.len() as i64;
         while i < n {
-            let mut lang: Rc<RefCell<EditorLanguage>> = self.plugins[i as usize].clone();
+            let mut lang: Rc<RefCell<dyn EditorLanguage>> = self.plugins[i as usize].clone();
             if lang.borrow().handlesFile(name) {
                 return lang;
             }

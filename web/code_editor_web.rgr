@@ -13,11 +13,11 @@
 ; the scene.
 ; ==============================================================================
 
-Import "../src/CodeEditorPage.rgr"
+Import "../src/lib.rs"
 Import "../../game_engine/ui/UIInput.rgr"
 
 class CodeEditorWeb {
-    def page:CodeEditorPage (new CodeEditorPage)
+    def page:CodeEditorPage (CodeEditorPage.new_())
     def input:UIInput (new UIInput)
 
     Constructor () {

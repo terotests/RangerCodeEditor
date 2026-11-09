@@ -6,13 +6,17 @@
 
 #![allow(non_snake_case, unused_imports)]
 
+pub mod code_editor_page;
 pub mod code_tokens;
 pub mod completion;
 pub mod editor_diagnostic;
 pub mod editor_language;
+pub mod js_language;
 pub mod js_tokens;
+pub mod ranger_language;
 pub mod ranger_tokens;
 mod rgr;
+pub mod script_editor;
 
 /// Text in the target's own units, for crates that use this one.
 pub use crate::rgr::CeNative;

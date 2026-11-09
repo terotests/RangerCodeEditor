@@ -12,9 +12,6 @@
 ; ==============================================================================
 
 Import "../src/lib.rs"
-Import "../src/ScriptEditor.rgr"
-Import "../src/JsLanguage.rgr"
-Import "../src/RangerLanguage.rgr"
 
 class Checker {
     def passed:int 0
@@ -99,7 +96,7 @@ class ScriptEditorTest {
         c.eqInt("code resumes after the close" (ScriptEditorTest.kindAt(l2 10)) (CodeTokenKind.ident()))
 
         print "== the editor =="
-        def ed:ScriptEditor (new ScriptEditor)
+        def ed:ScriptEditor (ScriptEditor.new_())
         ed.init("function render() {\n  return 1;\n}\n")
         c.eqInt("lines counted" (ed.buf.lineCount()) 4)
         c.ok("nothing typed yet" (ed.dirty == false))
@@ -125,7 +122,7 @@ class ScriptEditorTest {
         c.eqStr("with what was typed" (ed.text()) "x")
 
         print "== the keyboard can cross the file =="
-        def kb:ScriptEditor (new ScriptEditor)
+        def kb:ScriptEditor (ScriptEditor.new_())
         kb.init("const alpha = 1;\nfunction beta() {\n  return gamma;\n}\n")
         kb.moveCaret(0 0 false)
         kb.handleKey((UIKey.right()) false true)
@@ -158,7 +155,7 @@ class ScriptEditorTest {
         ; With a language plugin installed. Without one the editor draws plain
         ; text on purpose — an unknown file should not be coloured as if it
         ; were understood.
-        ed.setLanguage((new JsLanguage))
+        ed.setLanguage((JsLanguage.new_()))
         ed.init("const a = 1;")
         ed.ensureTokens()
         def first:CodeTokenLine (ed.tokensFor(0))
@@ -174,7 +171,7 @@ class ScriptEditorTest {
         c.eqInt("and the comment is there" (ScriptEditorTest.kindAt(again 13)) (CodeTokenKind.comment()))
 
         print "== a language plugin says what is wrong =="
-        def js:JsLanguage (new JsLanguage)
+        def js:JsLanguage (JsLanguage.new_())
         c.eqStr("it knows its name" (js.id()) "javascript")
         c.ok("and which files are its own" (js.handlesFile("report.tsx")))
         c.ok("but not another language's" ((js.handlesFile("thing.rgr")) == false))
@@ -205,7 +202,7 @@ class ScriptEditorTest {
         c.ok("and something to say" ((strlen pd.message) > 4))
 
         print "== and another plugin, for another language =="
-        def rg:RangerLanguage (new RangerLanguage)
+        def rg:RangerLanguage (RangerLanguage.new_())
         c.eqStr("its own name" (rg.id()) "ranger")
         c.ok("its own files" (rg.handlesFile("Thing.rgr")))
         def rgClean:[EditorDiagnostic] (rg.diagnose("class A {\n    fn f:int () {\n        return (this.g())\n    }\n}\n"))
@@ -224,17 +221,17 @@ class ScriptEditorTest {
         def reg:LanguageRegistry (LanguageRegistry.new_())
         reg.add(js)
         reg.add(rg)
-        def pick1:EditorLanguage (reg.forFile("summary.tsx"))
-        c.eqStr("a .tsx goes to the javascript plugin" (pick1.id()) "javascript")
-        def pick2:EditorLanguage (reg.forFile("GridApp.rgr"))
-        c.eqStr("a .rgr goes to the ranger one" (pick2.id()) "ranger")
-        def pick3:EditorLanguage (reg.forFile("notes.txt"))
-        c.eqStr("and an unknown file complains about nothing" (pick3.id()) "text")
-        def byId:EditorLanguage (reg.byId("ranger"))
-        c.eqStr("plugins can be found by id" (byId.id()) "ranger")
+        def pick1:DynEditorLanguage (reg.forFile("summary.tsx"))
+        c.eqStr("a .tsx goes to the javascript plugin" (DynEditorLanguage_ops.id(pick1)) "javascript")
+        def pick2:DynEditorLanguage (reg.forFile("GridApp.rgr"))
+        c.eqStr("a .rgr goes to the ranger one" (DynEditorLanguage_ops.id(pick2)) "ranger")
+        def pick3:DynEditorLanguage (reg.forFile("notes.txt"))
+        c.eqStr("and an unknown file complains about nothing" (DynEditorLanguage_ops.id(pick3)) "text")
+        def byId:DynEditorLanguage (reg.byId("ranger"))
+        c.eqStr("plugins can be found by id" (DynEditorLanguage_ops.id(byId)) "ranger")
 
         print "== the editor shows them, and forgets them when fixed =="
-        def ed2:ScriptEditor (new ScriptEditor)
+        def ed2:ScriptEditor (ScriptEditor.new_())
         ed2.setLanguage(js)
         ed2.init("function render() {\n  return 1;\n")
         c.eqInt("one problem to start with" (ed2.problemCount()) 1)
@@ -341,7 +338,7 @@ class ScriptEditorTest {
         c.eqStr("and by what they are" rm.detail "method")
 
         print "== and the editor can take one =="
-        def ed3:ScriptEditor (new ScriptEditor)
+        def ed3:ScriptEditor (ScriptEditor.new_())
         ed3.setLanguage(js)
         ed3.init("function render() {\n  \n}\n")
         ed3.moveCaret(1 2 false)
@@ -373,7 +370,7 @@ class ScriptEditorTest {
         c.ok("Escape closes it" (ed3.completionOpen == false))
 
         print "== the clipboard's half of the model =="
-        def cb:ScriptEditor (new ScriptEditor)
+        def cb:ScriptEditor (ScriptEditor.new_())
         cb.setLanguage(js)
         cb.init("alpha beta\nsecond line\nthird\n")
         cb.moveCaret(0 0 false)
@@ -387,7 +384,7 @@ class ScriptEditorTest {
         c.eqStr("and the document is shorter" (cb.buf.lineAt(0)) " line")
 
         print "== a double-click takes a word, Tab indents a range =="
-        def wx:ScriptEditor (new ScriptEditor)
+        def wx:ScriptEditor (ScriptEditor.new_())
         wx.init("const alpha = 1;\nnext line\n")
         wx.selectWordAtPos(0 8)
         c.eqStr("double-click takes the word under it" (wx.selectionText()) "alpha")
@@ -396,13 +393,13 @@ class ScriptEditorTest {
         wx.selectWordAtPos(0 5)
         c.eqStr("a gap takes the character under it" (wx.selectionText()) " ")
 
-        def tb:ScriptEditor (new ScriptEditor)
+        def tb:ScriptEditor (ScriptEditor.new_())
         tb.init("alpha\nbeta\n")
         tb.moveCaret(0 0 false)
         tb.handleKey((UIKey.tab()) false false)
         c.eqStr("tab at the caret still inserts spaces" (tb.buf.lineAt(0)) "  alpha")
 
-        def rg:ScriptEditor (new ScriptEditor)
+        def rg:ScriptEditor (ScriptEditor.new_())
         rg.init("alpha\nbeta\n")
         rg.moveCaret(0 1 false)
         rg.moveCaret(0 4 true)
@@ -415,7 +412,7 @@ class ScriptEditorTest {
         c.eqStr("shift+tab takes the indent back" (rg.buf.lineAt(0)) "alpha")
         c.eqStr("and the span is still there" (rg.selectionText()) "lph")
 
-        def blk:ScriptEditor (new ScriptEditor)
+        def blk:ScriptEditor (ScriptEditor.new_())
         blk.init("alpha\nbeta\ngamma\n")
         blk.moveCaret(0 0 false)
         blk.moveCaret(2 0 true)
@@ -433,7 +430,7 @@ class ScriptEditorTest {
         c.eqStr("undo is one indent step" (blk.buf.lineAt(0)) "  alpha")
 
         print "== the minimap is a map of the file =="
-        def mm:ScriptEditor (new ScriptEditor)
+        def mm:ScriptEditor (ScriptEditor.new_())
         def built:string ""
         def mi:int 0
         while (mi < 80) {
@@ -488,7 +485,7 @@ class ScriptEditorTest {
         c.ok("a space is no speck" ((ScriptEditor.minimapInk(32)) < 0.001))
 
         print "== a tab is four columns of space, not an empty box =="
-        def tabs:ScriptEditor (new ScriptEditor)
+        def tabs:ScriptEditor (ScriptEditor.new_())
         tabs.init("class A {\n\tint x;\n\t\tint y;\n}\nab\tc\n")
         c.eqStr("one tab indents to four" (tabs.buf.lineAt(1)) "    int x;")
         c.eqStr("two tabs to eight" (tabs.buf.lineAt(2)) "        int y;")
@@ -496,7 +493,7 @@ class ScriptEditorTest {
         c.ok("no tab survives" ((indexOf (tabs.text()) "\t") < 0))
 
         print "== Ctrl+F finds, wraps, and counts =="
-        def fd:ScriptEditor (new ScriptEditor)
+        def fd:ScriptEditor (ScriptEditor.new_())
         fd.init("alpha beta\ngamma alpha\ndelta\nAlpha again\n")
         c.ok("Ctrl+F opens the bar" (fd.handleCtrlChar(102)))
         c.ok("and it is up" (fd.findActive()))
@@ -524,7 +521,7 @@ class ScriptEditorTest {
         c.eqStr("and the keys go back to the document, over the match" (fd.buf.lineAt(3)) "za again")
 
         print "== horizontal scroll"
-        def hs:ScriptEditor (new ScriptEditor)
+        def hs:ScriptEditor (ScriptEditor.new_())
         hs.init("fn f:void () {\n    return (\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\")\n}\n")
         hs.showMinimap = false
         hs.setBounds(0 0 240 400)
