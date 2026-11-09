@@ -1,0 +1,7 @@
+; SPDX-License-Identifier: AGPL-3.0-or-later
+;
+; The .rgr classes the crate's Rust-syntax modules use, in one import
+; closure: rgr.rs includes it once (import_rgr!). They come from the Ranger
+; checkout this repository sits in (gallery/codeeditor).
+
+Import "CeNative.rgr"

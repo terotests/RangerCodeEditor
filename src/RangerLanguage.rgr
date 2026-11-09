@@ -19,10 +19,8 @@
 ; repository's own AGENTS.md says cost the most time.
 ; ==============================================================================
 
-Import "EditorLanguage.rgr"
-Import "EditorDiagnostic.rgr"
 Import "RangerTokens.rgr"
-Import "Completion.rgr"
+Import "lib.rs"
 
 class RangerLanguage {
     Extends(EditorLanguage)

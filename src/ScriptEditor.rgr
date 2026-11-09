@@ -25,10 +25,7 @@
 ; away from the letter it is supposed to be in front of.
 ; ==============================================================================
 
-Import "EditorLanguage.rgr"
-Import "CodeTokens.rgr"
-Import "Completion.rgr"
-Import "EditorDiagnostic.rgr"
+Import "lib.rs"
 Import "../../text_editor/src/EditorBuffer.rgr"
 Import "../../text_editor/src/EditorSelection.rgr"
 Import "../../text_editor/src/EditorLayout.rgr"
@@ -145,7 +142,7 @@ class ScriptEditor {
     ; The language plugin that says what is wrong with this document, and what
     ; it last said. Nothing here knows what a syntax error IS — see
     ; lang/EditorLanguage.rgr.
-    def language:EditorLanguage (new EditorLanguage)
+    def language:EditorLanguage (EditorLanguage.new_())
     def diagnostics:[EditorDiagnostic]
     ; Per line: 0 plain, 1 added, 2 removed. Shorter than the buffer means
     ; the rest is plain. Set by a host showing a merged diff view; cleared
@@ -416,7 +413,7 @@ class ScriptEditor {
             }
             i = (i + 1)
         }
-        def blank:EditorDiagnostic (new EditorDiagnostic)
+        def blank:EditorDiagnostic (EditorDiagnostic.new_())
         blank.line = -1
         return blank
     }
@@ -553,11 +550,11 @@ class ScriptEditor {
 
     fn tokensFor:CodeTokenLine (line:int) {
         if (line < 0) {
-            def none:CodeTokenLine (new CodeTokenLine)
+            def none:CodeTokenLine (CodeTokenLine.new_())
             return none
         }
         if (line >= (array_length lines)) {
-            def none2:CodeTokenLine (new CodeTokenLine)
+            def none2:CodeTokenLine (CodeTokenLine.new_())
             return none2
         }
         return (itemAt lines line)
@@ -1591,7 +1588,7 @@ class ScriptEditor {
         def i:int 0
         while (i < n) {
             def t:CodeToken (toks.at(i))
-            def stop:int (t.start + t.len)
+            def stop:int (t.start + t.length)
             def part:string (substring s t.start stop)
             def px:int (this.caretViewX(tr line t.start))
             def col:EVGColor (theme.forKind(t.kind))
@@ -1862,7 +1859,7 @@ class ScriptEditor {
         while (i < n) {
             def t:CodeToken (toks.at(i))
             def col:EVGColor (theme.forKind(t.kind))
-            this.paintMinimapSpan(dl s t.start t.len x0 y h charW limit col)
+            this.paintMinimapSpan(dl s t.start t.length x0 y h charW limit col)
             i = (i + 1)
         }
     }

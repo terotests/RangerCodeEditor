@@ -24,10 +24,8 @@
 ; going quiet.
 ; ==============================================================================
 
-Import "EditorLanguage.rgr"
-Import "EditorDiagnostic.rgr"
 Import "JsTokens.rgr"
-Import "Completion.rgr"
+Import "lib.rs"
 Import "../../ts_parser/ts_parser_simple.rgr"
 
 class JsLanguage {

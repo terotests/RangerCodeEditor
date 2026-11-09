@@ -57,7 +57,7 @@ class ScriptEditorTest {
 
     sfn textOf:string (src:string line:CodeTokenLine index:int) {
         def t:CodeToken (line.at(index))
-        def stop:int (t.start + t.len)
+        def stop:int (t.start + t.length)
         return (substring src t.start stop)
     }
 
@@ -221,7 +221,7 @@ class ScriptEditorTest {
         c.ok("so is a statement starting with a receiver" ((array_length rgRecv) > 0))
 
         print "== the registry picks by file name =="
-        def reg:LanguageRegistry (new LanguageRegistry)
+        def reg:LanguageRegistry (LanguageRegistry.new_())
         reg.add(js)
         reg.add(rg)
         def pick1:EditorLanguage (reg.forFile("summary.tsx"))

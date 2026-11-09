@@ -21,7 +21,7 @@
 ; ==============================================================================
 
 Import "ScriptEditor.rgr"
-Import "EditorLanguage.rgr"
+Import "lib.rs"
 Import "JsLanguage.rgr"
 Import "RangerLanguage.rgr"
 Import "../../game_engine/framebuffer.rgr"
@@ -54,7 +54,7 @@ class CodeEditorPage {
     ; host that wants a third language constructs it and adds it here, and
     ; nothing else in the editor changes. Nothing is spawned, connected to or
     ; serialized — see lang/EditorLanguage.rgr for why that is deliberate.
-    def languages:LanguageRegistry (new LanguageRegistry)
+    def languages:LanguageRegistry (LanguageRegistry.new_())
 
     def bg:EVGColor (EVGColor.rgb(15 16 22))
     def barBg:EVGColor (EVGColor.rgb(30 32 44))

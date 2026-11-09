@@ -22,7 +22,7 @@
 ; punctuation, so `i < rows.length` keeps its colour.
 ; ==============================================================================
 
-Import "CodeTokens.rgr"
+Import "lib.rs"
 
 class JsTokenizer {
     ; Carried between lines: 0 code, 1 inside /* … */, 2 inside `…`
@@ -113,7 +113,7 @@ class JsTokenizer {
     }
 
     fn tokenizeLine:CodeTokenLine (line:string) {
-        def out:CodeTokenLine (new CodeTokenLine)
+        def out:CodeTokenLine (CodeTokenLine.new_())
         def n:int (strlen line)
         def i:int 0
         def kw:[string] (JsTokenizer.keywords())

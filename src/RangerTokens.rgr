@@ -13,7 +13,7 @@
 ; be added to the painter would not be a plugin.
 ; ==============================================================================
 
-Import "CodeTokens.rgr"
+Import "lib.rs"
 
 class RangerTokenizer {
     Constructor () {
@@ -42,7 +42,7 @@ class RangerTokenizer {
     }
 
     fn tokenizeLine:CodeTokenLine (line:string) {
-        def out:CodeTokenLine (new CodeTokenLine)
+        def out:CodeTokenLine (CodeTokenLine.new_())
         def n:int (strlen line)
         def i:int 0
         def kw:[string] (RangerTokenizer.keywords())
