@@ -8,9 +8,8 @@
 #   scripts/test.sh [--ranger DIR] [--only es6|go|cargo|rust] [--rust]
 #
 # --rust also runs the suite through Ranger's Rust writer (.rs -> Ranger ->
-# Rust -> rustc, the path MFilesAPI's Rust WASM window takes). It does not
-# build yet: the writer does not wrap a struct into the enum it writes for
-# `dyn EditorLanguage` (see README, "Known gaps").
+# Rust -> rustc, the path MFilesAPI's Rust WASM window takes); it needs a
+# Ranger with PR #1303 (the struct wrapped into `dyn EditorLanguage`'s enum).
 #
 # The sources import each other as they would sit in a Ranger checkout at
 # gallery/codeeditor; scripts/stage.sh links this repository there.

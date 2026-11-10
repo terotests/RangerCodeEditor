@@ -57,7 +57,7 @@ needed; Go and cargo for their parts of the test.
 
 ```bash
 scripts/test.sh                  # suite on es6 and Go (same output), cargo check
-scripts/test.sh --rust           # also through Ranger's Rust writer (see Known gaps)
+scripts/test.sh --rust           # also through Ranger's Rust writer (.rs -> Ranger -> Rust)
 scripts/build-web.sh             # the page, into dist/
 python3 -m http.server -d dist 8001
 npm install && node web/smoke.mjs --dist dist       # type into it in headless Chrome
@@ -112,13 +112,6 @@ runs all of them on every push and publishes `main` to GitHub Pages.
 
 ## Known gaps
 
-- **Ranger's Rust writer** (`.rs` → Ranger → Rust, the path MFilesAPI's
-  Rust WASM window takes) does not build this crate yet. It writes
-  `dyn EditorLanguage` as an enum and does not wrap a struct into it where
-  one is assigned or passed (`none: PlainText::zero_of()` where
-  `union_DynEditorLanguage` is expected). cargo builds the `.rs` files
-  directly and is not affected. The fix belongs in Ranger's
-  `compiler/RustUnion.rgr`.
 - `EVGHostTextMeasurer`'s optional boxed closure is also beyond that writer;
   `build.rs` patches it out of the generated module, as MFilesAPI's builds do.
 - Ranger's es6 writer copies a doc comment into `/** … */` unescaped, so a
