@@ -112,7 +112,7 @@ runs all of them on every push and publishes `main` to GitHub Pages.
 
 ## Known gaps
 
-- `EVGHostTextMeasurer`'s optional boxed closure is also beyond that writer;
+- `EVGHostTextMeasurer`'s optional boxed closure is beyond Ranger's Rust writer;
   `build.rs` patches it out of the generated module, as MFilesAPI's builds do.
 - Ranger's es6 writer copies a doc comment into `/** … */` unescaped, so a
   doc comment here must not contain `*/`.
